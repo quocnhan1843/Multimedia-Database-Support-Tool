@@ -139,6 +139,7 @@ public class ProcessInsert {
                     , Font.PLAIN, Dictionary.Font_Size.DEFAULT.getValue()));
             g2d.drawString((String) vectorString.get(index), x + width + 10, y + 20);
             
+           // if(xInsert < 0 && yInsert < 0) Process.nextText();
         }catch(Exception ex){}
     }
 

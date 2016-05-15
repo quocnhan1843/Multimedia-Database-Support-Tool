@@ -15,8 +15,6 @@ import multidimensionaldata.control.MyTable;
 import multidimensionaldata.tree.InfoNode;
 import multidimensionaldata.tree.KDimensionalTree;
 import multidimensionaldata.tree.MXQuadTree;
-import multidimensionaldata.tree.Node;
-import multidimensionaldata.tree.Point;
 import multidimensionaldata.tree.Point2D;
 import multidimensionaldata.tree.PointQuadTree;
 import multidimensionaldata.tree.Tree;
@@ -44,6 +42,7 @@ public class Process implements Runnable{
     private static ProcessInsert processInsert = new ProcessInsert();
     private static ProcessDelete processDelete = new ProcessDeleteDimensional();
     private static ProcessSearch processSearch = new ProcessSearch();
+    //private static ProcesShowText procesShowText = new ProcesShowText();
     
     private static long timeStart = System.currentTimeMillis();
     
@@ -76,6 +75,13 @@ public class Process implements Runnable{
     public static void clearComponents() {
         processInsert.clear();
     }
+    
+//    public static void addText(String text){
+//        procesShowText.insertText(text);
+//    }
+//    public static void nextText(){
+//        procesShowText.next();
+//    }
 
     public static void setTreePaint(Tree tree) {
         treeMain= tree;

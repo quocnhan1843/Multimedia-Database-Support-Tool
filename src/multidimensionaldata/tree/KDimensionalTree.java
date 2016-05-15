@@ -114,6 +114,8 @@ public class KDimensionalTree extends Tree{
         for(int i=0; i<100; i++){
             Process.addPointInsert(new Point2D(xf, yf),string);
         }
+        Process.addPointInsert(new Point2D(-1, -1), string);
+        //Process.addText(string);
     }
 
     @Override
