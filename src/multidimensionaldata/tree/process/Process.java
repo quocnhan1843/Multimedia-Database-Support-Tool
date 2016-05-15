@@ -14,6 +14,8 @@ import multidimensionaldata.control.MultiDimensionalDataStructure;
 import multidimensionaldata.control.MyTable;
 import multidimensionaldata.tree.InfoNode;
 import multidimensionaldata.tree.KDimensionalTree;
+import multidimensionaldata.tree.MXQuadTree;
+import multidimensionaldata.tree.Node;
 import multidimensionaldata.tree.Point;
 import multidimensionaldata.tree.Point2D;
 import multidimensionaldata.tree.PointQuadTree;
@@ -63,20 +65,12 @@ public class Process implements Runnable{
         processSearch.setInfo(infoNode);
     }
     
-    public static void removeNodeLabel(String label) {
-        treeMain.deleteNodeLabel(label, true);
+    public static void removeNode(InfoNode infoNode){
+        treeMain.deleteNode(infoNode.getLabel(), infoNode.getPoint(), true);
     }
 
-    public static void removeNodePoint(Point p) {
-        treeMain.deleteNodePoint(p, true);
-    }
-
-    public static void searchLabelAndPaint(String label) {
-        treeMain.searchLabelAndPaint(label, true);
-    }
-
-    public static void searchPointAndPaint(Point p) {
-        treeMain.searchPointAndPaint(p, true);
+    public static void searchAndPaint(InfoNode infoNode) {
+        treeMain.searchNodeAndPaint(infoNode.getLabel(), infoNode.getPoint(), true);
     }
 
     public static void clearComponents() {
@@ -91,6 +85,9 @@ public class Process implements Runnable{
         }else if(tree.getName().equals(Dictionary.Words.NAME_POINTQUADTREE.getString())){
             treePaint = new PointQuadTree();
             processDelete = new ProcessDeletePointQuad();
+        }else if(tree.getName().equals(Dictionary.Words.NAME_MATRIXQUADTREE.getString())){
+            treePaint = new MXQuadTree();
+            processDelete = new ProcessDeleteMatrixQuad();
         }
     }
 

@@ -51,9 +51,13 @@ public class ProcessDeletePointQuad implements ProcessDelete{
 
     @Override
     public void go(Tree treePaint) {
-        if(haveObject)
-            treePaint.deleteNodePoint(infoObject.getPoint(), false);
-        reset();
+        try{
+            if(haveObject)
+                treePaint.deleteNode(infoObject.getLabel(), infoObject.getPoint(), false);
+            reset();
+        }catch(NullPointerException ex){
+            
+        }
     }
 
     @Override

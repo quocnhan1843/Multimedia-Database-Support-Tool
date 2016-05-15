@@ -63,7 +63,7 @@ public class ProcessDeleteDimensional implements ProcessDelete{
         if(isComplete()){
             MultiDimensionalDataStructure.status = MultiDimensionalDataStructure.STATE.NOTHING;
             Process.stateRun = Process.STATE.WAITING;
-            treePaint.deleteNodeLabel(infoObject.getLabel(), false);
+            treePaint.deleteNode(infoObject.getLabel(), infoObject.getPoint(), false);
             reset();
             return;
         }

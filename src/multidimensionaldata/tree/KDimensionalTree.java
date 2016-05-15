@@ -117,43 +117,35 @@ public class KDimensionalTree extends Tree{
     }
 
     @Override
-    public void deleteNodeLabel(String label, boolean paint) {
+    public void deleteNode(String label, Point point, boolean paint) {
         try{
-            super.setSizeDown();
-            KDimensionalNode node  = new KDimensionalNode(label, new Point());
-            KDimensionalNode current = searchNodeLabel(this.root, node, paint);
+            KDimensionalNode kDimensionalNode  = new KDimensionalNode(label, point);
+            KDimensionalNode current = searchNode(this.root, kDimensionalNode, paint);
+            System.out.println(current.getPoint().print());
             if(current == null){
                 return;
             }
             if(current.isLeaves()){
-                Process.setNodeDelete(new InfoNode(label, new Point()), new InfoNode(label, new Point()));
+                Process.setNodeDelete(new InfoNode(label, point), new InfoNode(label, point));
                 Process.addPointSwap(new Point2D(0, 0), new Point2D(1, 1));
+                
+                if(current.equals(root)){
+                    this.root = null;
+                    super.setSize(0);
+                    return;
+                }
+                if(current.isLeftChild(current.getParent())){
+                    current.getParent().setLeftChild(null);
+                    super.setSizeDown();
+                }else{
+                    current.getParent().setRightChild(null);
+                    super.setSizeDown();
+                }
+                return;
             }
             removeNode(current, current.getLevel() % super.getNumOfDimension(), paint);
 //            if(this.root != null)
 //                updatePositionNode(this.root,this.root.getxPos(), this.root.getyPos());
-        }catch(NullPointerException nullPointerException){
-            
-        }
-    }
-    
-    @Override
-    public void deleteNodePoint(Point point, boolean paint) {
-        try{
-            super.setSizeDown();
-            KDimensionalNode node  = new KDimensionalNode("", point);
-            KDimensionalNode current = searchNodePoint(this.root, node, paint);
-            if(current == null){
-                return;
-            }
-            if(current.isLeaves()){
-                Process.setNodeDelete(new InfoNode(current.getLabel(), new Point())
-                        , new InfoNode(current.getLabel(), new Point()));
-                Process.addPointSwap(new Point2D(0, 0), new Point2D(1, 1));
-            }
-            removeNode(current, current.getLevel() % super.getNumOfDimension(), paint);
-//            if(this.root != null)
-//                updatePositionNode(this.root, this.root.getxPos(), this.root.getyPos());
         }catch(NullPointerException nullPointerException){
             
         }
@@ -198,12 +190,15 @@ public class KDimensionalTree extends Tree{
         if(current.isLeaves()){
             if(current.equals(root)){
                 this.root = null;
+                super.setSize(0);
                 return;
             }
             if(current.isLeftChild(current.getParent())){
                 current.getParent().setLeftChild(null);
+                super.setSizeDown();
             }else{
                 current.getParent().setRightChild(null);
+                super.setSizeDown();
             }
             return;
         }
@@ -229,11 +224,6 @@ public class KDimensionalTree extends Tree{
 //        Process.treePaint.setColor(minNode);
         current.swapNode(minNode);
         removeNode(minNode, k, paint);
-    }
-    
-    public void setColor(Node node){
-        searchNode(root, new KDimensionalNode(node.getLabel(), node.getPoint()))
-                .setColor(Dictionary.COLOR.BACKGROUND_SWAP.getColor());
     }
     
     private void updatePosAfterSwap(KDimensionalNode current, int distance){
@@ -274,9 +264,10 @@ public class KDimensionalTree extends Tree{
             Process.addPointSearch(new Point2D(x1, y1));
         }
         
-        if(!isLeave)
-        for(int i=0; i<1000; i++){
-          //  Process.addNodeInsert(new Point2D(xf, yf));
+        
+        //if(!isLeave)
+        for(int i=0; i<500; i++){
+            Process.addPointSearch(new Point2D(xf, yf));
         }
     }
 
@@ -318,38 +309,12 @@ public class KDimensionalTree extends Tree{
         }return searchNodePreInsert(current.getLeftChild(), node);
     }
 
-    private KDimensionalNode searchNode(KDimensionalNode current, KDimensionalNode node) {
-        KDimensionalNode node1 = searchNodeLabel(current, node, false);
-        if(node1 != null) return node1;
-        KDimensionalNode node2 = searchNodePoint(current, node, false);
-        if(node2 != null) return node2;
-        return null;
-    }
-    private KDimensionalNode searchNodeLabel(KDimensionalNode current, KDimensionalNode node, boolean paint){
-        if(current == null) return null;
-        if(current.getLabel().equals(node.getLabel())){
+    private KDimensionalNode searchNode(KDimensionalNode current, KDimensionalNode node, boolean paint){
+        if(current == null){
             Process.setNodeSearch(new InfoNode(node.getLabel(), node.getPoint()));
-            return current;
+            return null;
         }
-        if(paint){
-            if(current.getLeftChild() != null)
-                runAnimationSearch(current.getxPos(), current.getyPos()
-                    , current.getLeftChild().getxPos(), current.getLeftChild().getyPos(), paint);
-        }
-        KDimensionalNode leftChild = searchNodeLabel(current.getLeftChild(), node, paint);
-        if(leftChild != null) return leftChild;
-         if(paint){
-             if(current.getRightChild()!= null)
-                runAnimationSearch(current.getxPos(), current.getyPos()
-                                    , current.getRightChild().getxPos(), current.getRightChild().getyPos(), paint);
-        }
-        KDimensionalNode rightChild = searchNodeLabel(current.getRightChild(), node, paint);
-        if(rightChild != null) return rightChild;
-        return null;        
-    }
-    private KDimensionalNode searchNodePoint(KDimensionalNode current, KDimensionalNode node, boolean paint){
-        if(current == null) return null;
-        if(node.getPoint().equalPoint(current.getPoint())){
+        if(current.equalNode(node)){
             Process.setNodeSearch(new InfoNode(node.getLabel(), node.getPoint()));
             return current;
         }
@@ -361,28 +326,14 @@ public class KDimensionalTree extends Tree{
                                     , current.getRightChild().getxPos(), current.getRightChild().getyPos(), paint);
             }
             
-            return searchNodePoint(current.getRightChild(), node, paint);
+            return searchNode(current.getRightChild(), node, paint);
         }
         if(paint){
             if(current.getLeftChild() != null)
                 runAnimationSearch(current.getxPos(), current.getyPos()
                     , current.getLeftChild().getxPos(), current.getLeftChild().getyPos(), paint);
         }
-        return searchNodePoint(current.getLeftChild(), node, paint);
-    }
-    
-    private boolean checkLabel(KDimensionalNode current, String label) {
-        if(current == null) return false;
-        if(current.getLabel().equals(label)) return true;
-        return checkLabel(current.getLeftChild(), label) ||
-                checkLabel(current.getRightChild(), label);
-    }
-
-    private boolean checkPoint(KDimensionalNode current, Point point) {
-        if(current == null) return false;
-        if(current.getPoint().equalPoint(point)) return true;
-        if(point.greaterPoint(current.getPoint(), current.getLevel()%super.getNumOfDimension())) return checkPoint(current.getRightChild(), point);
-        return checkPoint(current.getLeftChild(), point);
+        return searchNode(current.getLeftChild(), node, paint);
     }
 
     @Override
@@ -419,16 +370,6 @@ public class KDimensionalTree extends Tree{
     }
 
     @Override
-    public boolean checkLabel(String str) {
-        return checkLabel(root, str);
-    }
-
-    @Override
-    public boolean checkPoint(Point point) {
-        return checkPoint(root, point);
-    }
-
-    @Override
     public Node findNode(MouseEvent e) {
         KDimensionalNode ans = findNode(this.getRoot(), e);
         if(ans == null) return null;
@@ -447,24 +388,13 @@ public class KDimensionalTree extends Tree{
     }
 
     @Override
-    public void searchLabelAndPaint(String label, boolean paint) {
+    public void searchNodeAndPaint(String label, Point point, boolean paint) {
         try{
-            KDimensionalNode node = new KDimensionalNode(label, new Point());
-            KDimensionalNode nodeSearch = searchNodeLabel(this.root, node, paint);
+            KDimensionalNode kDimensionalNode = new KDimensionalNode(label, point);
+            KDimensionalNode nodeSearch = searchNode(this.root, kDimensionalNode, paint);
             nodeSearch.setColor(Dictionary.COLOR.BACKGROUND_NODE_WHEN_CHOOSE.getColor());
         }catch(NullPointerException nullPointerException){
-            nullPointerException.printStackTrace();
-        }
-    }
-
-    @Override
-    public void searchPointAndPaint(Point point, boolean paint) {
-        try{
-            KDimensionalNode node = new KDimensionalNode("", point);
-            KDimensionalNode nodeSearch = searchNodePoint(this.root, node, paint);
-            nodeSearch.setColor(Dictionary.COLOR.BACKGROUND_NODE_WHEN_CHOOSE.getColor());
-        }catch(NullPointerException nullPointerException){
-            nullPointerException.printStackTrace();
+            //nullPointerException.printStackTrace();
         }
     }
 

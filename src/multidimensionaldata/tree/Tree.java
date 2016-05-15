@@ -23,20 +23,16 @@ public abstract class Tree {
     //public static enum STATE_INSERT{SUCCESSFUL
     
     public abstract Node getRoot();
-    public abstract void insertNode(String label, Point points, boolean paint);
-    public abstract void deleteNodeLabel(String label, boolean paint);
-    public abstract void deleteNodePoint(Point point, boolean paint);
+    public abstract void insertNode(String label, Point point, boolean paint);
+    public abstract void deleteNode(String label, Point point, boolean paint);
     public abstract String getName();
     public abstract void setEmpty();
     public abstract boolean isEmpty();
-    public abstract void searchLabelAndPaint(String label, boolean paint);
-    public abstract void searchPointAndPaint(Point point, boolean paint);
+    public abstract void searchNodeAndPaint(String label, Point point, boolean paint);
     public abstract void paintTree();
-    public abstract boolean checkLabel(String str);
-    public abstract boolean checkPoint(Point point);
     public abstract Node findNode(MouseEvent e);
     public abstract void resetColor();
-    public abstract void setColor(Node node);
+    
     
     public Tree(){
         size = 0;

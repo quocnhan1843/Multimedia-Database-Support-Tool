@@ -16,54 +16,64 @@ import multidimensionaldata.tree.Tree;
  */
 public class ProcessDeleteMatrixQuad implements ProcessDelete{
 
-    @Override
-    public void setInfo(InfoNode nodeObject, InfoNode nodeTarget) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private boolean haveObject;
+    private InfoNode infoObject;
+
+    public ProcessDeleteMatrixQuad() {
+        haveObject = false;
     }
 
     @Override
+    public void setInfo(InfoNode nodeObject, InfoNode nodeTarget) {
+    }
+    
+    @Override
     public void setInfo(InfoNode infoNode) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        infoObject = infoNode;
     }
 
     @Override
     public void reset() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        haveObject = false;                 
+        Process.stateRun = Process.STATE.WAITING;
     }
 
     @Override
     public boolean isComplete() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return true;
     }
 
     @Override
     public int getSize() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return 0;
     }
 
     @Override
     public void go(Tree treePaint) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try{
+            if(haveObject)
+                treePaint.deleteNode(infoObject.getLabel(), infoObject.getPoint(), false);
+            reset();
+        }catch(NullPointerException ex){
+            
+        }
     }
 
     @Override
     public void addPoint(Point2D pointObject, Point2D pointTarget) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void addPoint(Point2D point2D) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        haveObject = true;
     }
 
     @Override
     public void paint(Graphics2D g2d) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public boolean canNext() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return haveObject;
     }
-    
 }

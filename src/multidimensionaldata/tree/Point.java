@@ -35,6 +35,12 @@ public class Point {
         }
     }
     
+    public Point(int x, int y){
+        location = new Vector();
+        location.addElement(x);
+        location.addElement(y);
+    }
+    
     public boolean equalPoint(Point point){
         for(int i=0; i<location.size(); ++i){
             if(location.elementAt(i) != point.location.elementAt(i)) return false;
@@ -62,6 +68,14 @@ public class Point {
     
     public int getSize(){
         return location.size();
+    }
+
+    public String print() {
+        String s = "";
+        for(Object v:location){
+            s += v + " ";
+        }
+        return s;
     }
     
 }

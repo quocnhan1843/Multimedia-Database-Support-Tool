@@ -51,7 +51,7 @@ public class ProcessSearch {
         if(isComplete()){
             MultiDimensionalDataStructure.status = MultiDimensionalDataStructure.STATE.NOTHING;
             Process.stateRun = Process.STATE.WAITING;
-            treePaint.searchLabelAndPaint(infoNode.getLabel(), false);
+            treePaint.searchNodeAndPaint(infoNode.getLabel(), infoNode.getPoint(), false);
             reset();
             return;
         }

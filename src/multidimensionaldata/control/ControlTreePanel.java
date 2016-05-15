@@ -44,6 +44,7 @@ import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import multidimensionaldata.tree.InfoNode;
+import multidimensionaldata.tree.Node;
 import multidimensionaldata.tree.Point;
 import multidimensionaldata.tree.process.Process;
 import multidimensionaldata.tree.Tree;
@@ -99,12 +100,7 @@ public class ControlTreePanel extends JTabbedPane {
     
     private JTextField lastTextInsert;
     private JTextField lastTextDelete;
-    private JTextField lastTextSearch;
-    
-    private JRadioButton radioButtonLabelDelete;
-    private JRadioButton radioButtonPointDelete;
-    private JRadioButton radioButtonLabelSearch;
-    private JRadioButton radioButtonPointSearch;
+    private JTextField lastTextSearch;    
     
     public static MyTable tableQueue;
     private JPanel panelQueue;
@@ -153,10 +149,6 @@ public class ControlTreePanel extends JTabbedPane {
         textAreaLog = new JTextArea();
         jScrollPane1 = new JScrollPane();
         pathText = new JTextField();
-        radioButtonLabelDelete = new JRadioButton();
-        radioButtonPointDelete = new JRadioButton();
-        radioButtonLabelSearch = new JRadioButton();
-        radioButtonPointSearch = new JRadioButton();
         tableQueue = new MyTable(tree);
         panelQueue = new JPanel();
         vectorInsertTextField = new Vector();
@@ -342,44 +334,31 @@ public class ControlTreePanel extends JTabbedPane {
     private void setTapSearch() {
         panelSearch.setLayout(new FlowLayout());
         labelSearch = new JLabel(Dictionary.Words.SEARCH_TITLE.getString());
-               labelSearch.setFont(new Font(Dictionary.Words.DEFAULT_FONT.getString()
-                       , Font.BOLD, Dictionary.Font_Size.TITLE_CONTROL.getValue()));
-               labelSearch.setForeground(Dictionary.COLOR.FOREGROUND_LABEL.getColor());
+        labelSearch.setFont(new Font(Dictionary.Words.DEFAULT_FONT.getString()
+                , Font.BOLD, Dictionary.Font_Size.TITLE_CONTROL.getValue()));
+        labelSearch.setForeground(Dictionary.COLOR.FOREGROUND_LABEL.getColor());
         panelSearch.add(labelSearch);
         d = 1;
-        setSelect(radioButtonLabelSearch,radioButtonPointSearch
-                    , textLabelNodeSearch, panelSearch, vectorSearchTextField);
+        
         setLabelNode(panelSearch, textLabelNodeSearch, labelLabelNodeSearch);
         setText(vectorSearchTextField, vectorSearchLabel, panelSearch);
         buttonSearch = addButton(vectorSearchTextField, panelSearch, textLabelNodeSearch);
         
-        for(int i=0; i<vectorSearchTextField.size(); i++){
-            JTextField t = (JTextField) vectorSearchTextField.get(i);
-            t.setEnabled(false);
-            t.setBackground(Color.lightGray);
-        }
         addKeyListenner(buttonSearch, textLabelNodeSearch, vectorSearchTextField);
     }
     
     private void setTapDelete() {
         panelDelete.setLayout(new FlowLayout());
         labelDelete = new JLabel(Dictionary.Words.DELETE_TITLE.getString());
-               labelDelete.setFont(new Font(Dictionary.Words.DEFAULT_FONT.getString()
-                       , Font.BOLD, Dictionary.Font_Size.TITLE_CONTROL.getValue()));
-               labelDelete.setForeground(Dictionary.COLOR.FOREGROUND_LABEL.getColor());
+        labelDelete.setFont(new Font(Dictionary.Words.DEFAULT_FONT.getString()
+                , Font.BOLD, Dictionary.Font_Size.TITLE_CONTROL.getValue()));
+        labelDelete.setForeground(Dictionary.COLOR.FOREGROUND_LABEL.getColor());
         panelDelete.add(labelDelete);
         d = 1;
-        setSelect(radioButtonLabelDelete, radioButtonPointDelete, textLabelNodeDelete
-                , panelDelete, vectorDeleteTextField);
+        
         setLabelNode(panelDelete, textLabelNodeDelete, labelLabelNodeDelete);
         setText(vectorDeleteTextField, vectorDeleteLabel, panelDelete);
         buttonDelete = addButton(vectorDeleteTextField, panelDelete, textLabelNodeDelete);
-        
-        for(int i=0; i<vectorDeleteTextField.size(); i++){
-            JTextField t = (JTextField) vectorDeleteTextField.get(i);
-            t.setEnabled(false);
-            t.setBackground(Color.lightGray);
-        }
         
         addKeyListenner(buttonDelete, textLabelNodeDelete, vectorDeleteTextField);
     }
@@ -408,7 +387,8 @@ public class ControlTreePanel extends JTabbedPane {
             @Override
             public void keyTyped(KeyEvent e) {
                 if(e.getKeyChar() == KeyEvent.VK_ENTER){
-                    completeButton();
+                    JTextField t2 = (JTextField) vectorTextField.get(0);
+                    t2.requestFocusInWindow();
                 }
             }
 
@@ -430,8 +410,7 @@ public class ControlTreePanel extends JTabbedPane {
             public void keyTyped(KeyEvent e) {
                 if(e.getKeyChar() == KeyEvent.VK_ENTER){
                    textLabelNode.requestFocusInWindow();
-                    
-                    completeButton();
+                   completeButton();
                 }
                 char character = e.getKeyChar();
                 if (((character < '0') || (character > '9'))
@@ -862,7 +841,6 @@ public class ControlTreePanel extends JTabbedPane {
         changeStateTextField();
         changeStateLabel();
         changeStateLoadFile();
-        changeRadioButton();
         changeTableQueue();
         
         for (Object vectorButtonComplete1 : vectorButtonComplete) {
@@ -963,12 +941,6 @@ public class ControlTreePanel extends JTabbedPane {
     }
     
     private String checkValidNode(String label, Point p){
-        if(tree.checkLabel(label) || checkLabelInQueue(label)){
-            return Dictionary.ERROR.ERROR_LABEL_EXISTS.getString();
-        }
-        if(tree.checkPoint(p) || checkPointInQueue(p) ){
-            return Dictionary.ERROR.ERROR_POINT_EXISTS.getString(); 
-        }
         if(tree.getNumOfDimension()!= p.getSize()){
             return Dictionary.ERROR.ERROR_POINT_INVALID.getString();
         }
@@ -980,97 +952,30 @@ public class ControlTreePanel extends JTabbedPane {
                                     , Math.max(100, tableQueue.getRowCount()*21)));
         scrollPane.getViewport().setViewPosition(new java.awt.Point(0, 21*(tree.getSize() - 1)));
     }
-    private void deleteNode() {
-        if(radioButtonLabelDelete.isSelected()){
-            String label = textLabelNodeDelete.getText();
-            if(label.equals("")){
-                JOptionPane.showMessageDialog(panelDelete,"ban chua nhap ten nhan");
-                return;
-            }
-            if(!tree.checkLabel(label)){
-                JOptionPane.showMessageDialog(panelDelete
-                        , Dictionary.ERROR.ERROR_LABEL_NOT_EXISTS.getString()
-                        , Dictionary.ERROR.ERROR.getString()
-                        , JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            Process.removeNodeLabel(label);
-            ((MyTable) tableQueue).removeLabel(label);
-        }else{
-            Point p = new Point();
-            try{
-                Vector vectorValue = new Vector();
-                for(int i=0; i<vectorDeleteTextField.size(); i++){
-                    JTextField textField = (JTextField) vectorDeleteTextField.get(i);
-                    int value = Integer.valueOf(textField.getText()).intValue();
-                    vectorValue.addElement(value);
-                }
-
-                p = new Point(vectorValue);
-
-
-                if(vectorValue.size() == dimension && !tree.checkPoint(p)){
-                    JOptionPane.showMessageDialog(panelDelete
-                            , Dictionary.ERROR.ERROR_POINT_NOT_EXISTS.getString()
-                            , Dictionary.ERROR.ERROR.getString()
-                            , JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                
-                Process.removeNodePoint(p);
-                ((MyTable) tableQueue).removePoint( p.getLocation());
-            }catch(Exception ex){}
+    private void deleteNode() {            
+        Vector vectorValue = new Vector();
+        String label = textLabelNodeDelete.getText();
+        for(int i=0; i<vectorDeleteTextField.size(); i++){
+            JTextField textField = (JTextField) vectorDeleteTextField.get(i);
+            int value = Integer.valueOf(textField.getText()).intValue();
+            vectorValue.addElement(value);
         }
+        System.out.println("Nhan = " + label);
+        System.out.println("Point = " + new Point(vectorValue).print());
+        if(label.equals("")){
+            JOptionPane.showMessageDialog(panelDelete,Dictionary.Words.LABEL_NOT_EMPTY.getString());
+            return;
+        }
+
+        Process.removeNode(new InfoNode(label, new Point(vectorValue)));
+        
         textLabelNodeDelete.setText("");
         clearText(vectorDeleteTextField);
         centerPanel.repaint();
     }
 
-    private void changeRadioButton() {
-        radioButtonLabelDelete.setText(Dictionary.Words.RADIO_LABEL.getString());
-        radioButtonPointDelete.setText(Dictionary.Words.RADIO_POINT.getString());
-    }
-
     private void searchNode() {
-        if(radioButtonLabelSearch.isSelected()){
-            String label = textLabelNodeSearch.getText();
-            if(label.equals("")){
-                JOptionPane.showMessageDialog(panelSearch,"ban chua nhap ten nhan");
-                return;
-            }
-            if(!tree.checkLabel(label)){
-                JOptionPane.showMessageDialog(panelSearch
-                        , Dictionary.ERROR.ERROR_LABEL_NOT_EXISTS.getString()
-                        , Dictionary.ERROR.ERROR.getString()
-                        , JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            Process.searchLabelAndPaint(label);
-        }else{
-            Point p = new Point();
-            try{
-                Vector vectorValue = new Vector();
-                for(int i=0; i<vectorSearchTextField.size(); i++){
-                    JTextField textField = (JTextField) vectorSearchTextField.get(i);
-                    int value = Integer.valueOf(textField.getText()).intValue();
-                    vectorValue.addElement(value);
-                }
-
-                p = new Point(vectorValue);
-
-                if(vectorValue.size() == dimension && !tree.checkPoint(p)){
-                    JOptionPane.showMessageDialog(panelSearch
-                            , Dictionary.ERROR.ERROR_POINT_NOT_EXISTS.getString()
-                            , Dictionary.ERROR.ERROR.getString()
-                            , JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                Process.searchPointAndPaint(p);
-            }catch(Exception ex){}
-        }
-        textLabelNodeSearch.setText("");
-        clearText(vectorSearchTextField);
-        centerPanel.repaint();
+        
     }
 
     private void changeTableQueue() {

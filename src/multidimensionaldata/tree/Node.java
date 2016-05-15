@@ -106,10 +106,27 @@ public abstract class Node {
         return point.greaterPoint(node.getPoint(), k);
     }
     public boolean contains(MouseEvent ev){
-        if(this.getxPos() <= ev.getX() / Paint.getK() && ev.getX()/ Paint.getK() <= this.getxPos() + 120){
-                if(this.getyPos() <= ev.getY()/ Paint.getK() && ev.getY()/ Paint.getK() <= this.getyPos() + 3*14) return true;
+        if(this.getxPos() <= ev.getX() / Paint.getK() && ev.getX()/ Paint.getK() 
+                <= this.getxPos() + 120){
+                if(this.getyPos() <= ev.getY()/ Paint.getK() 
+                        && ev.getY()/ Paint.getK() <= this.getyPos() + 3*14) 
+                    return true;
                 return false;
         }
         return false;
+    }
+    
+    public static Node getNode(String lable, Point point, String name){
+        if(name.equals(Dictionary.Words.NAME_KDIMENSIONALTREE.getString()))
+            return new KDimensionalNode(lable, point);
+        else if(name.equals(Dictionary.Words.NAME_POINTQUADTREE.getString())){
+            return new PointQuadNode(lable, point);
+        }
+        return new MXQuadNode();
+    }
+    
+    public boolean equalNode(Node node){
+        return (this.label.equals(node.label)) 
+                && (this.point.equalPoint(node.getPoint()));
     }
 }
