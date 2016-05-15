@@ -94,7 +94,7 @@ public class ProcessInsert {
         return !queueInfoNode.isEmpty();
     }
 
-    void paint(Graphics2D g2d) {
+    public void paint(Graphics2D g2d) {
         try{
             
             int x = (int) xInsert;

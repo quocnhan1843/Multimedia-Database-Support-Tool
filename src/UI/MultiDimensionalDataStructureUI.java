@@ -11,13 +11,17 @@ import multidimensionaldata.control.MultiDimensionalDataStructure;
 import de.javasoft.plaf.synthetica.SyntheticaBlueLightLookAndFeel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.ParseException;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -35,7 +39,7 @@ public class MultiDimensionalDataStructureUI extends javax.swing.JFrame{
         initComponents();
         setSizeMainUI();
         setComboBox();
-        ShowText.main();
+        //ShowText.main();
     }
 
     /**
@@ -63,8 +67,26 @@ public class MultiDimensionalDataStructureUI extends javax.swing.JFrame{
                 changeLang();
             }
         });
+         comboBoxLang.setFont(new Font(Dictionary.Font.DEFAULT.getString()
+                 , Font.PLAIN, Dictionary.Font_Size.DEFAULT.getValue()));
+        ImageIcon icon = new ImageIcon(
+                    this.getClass().getResource("/image/" + Dictionary.Icons.NOTE.getString()));
+        JButton button = new JButton(icon);
+        
+               JPanel pn = new JPanel(new FlowLayout());
                
-               jp.add(comboBoxLang, BorderLayout.EAST);
+               pn.add(button);
+               pn.add(comboBoxLang);
+               
+               button.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent ae) {
+                        ShowText.getInstace().setVisible(true);
+                    }
+               });
+               
+               jp.add(pn, BorderLayout.EAST);
+               //jp.add(button, BorderLayout.WEST);
         JPanel p = new JPanel(new BorderLayout());
                p.add(jp,BorderLayout.NORTH);
                p.add(multiDimensionalDataStructure, BorderLayout.CENTER);

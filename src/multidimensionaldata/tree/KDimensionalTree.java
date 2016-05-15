@@ -10,7 +10,10 @@ import UI.Dictionary;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
+import java.util.Vector;
 import multidimensionaldata.control.ControlTreePanel;
+import multidimensionaldata.tree.process.ProcesShowText;
+import multidimensionaldata.tree.process.ShowText;
 
 /**
  *
@@ -55,20 +58,32 @@ public class KDimensionalTree extends Tree{
             this.setRoot(new KDimensionalNode(label, point));
             this.getRoot().setLevel(0);
             this.getRoot().setPos(12*3000 + 500, 50);
-            addTextDisplay("Do cay rong ne " + label + " la nut goc");
-            Process.addPointInsert(new Point2D(-1, -1), "");
+            if(paint){
+                ShowText.addText("Vì cây rỗng nên nút " + getStringNode(label, point) + " trở thành nút gốc." );
+            }
             return;
         }
         goChild(this.root, new KDimensionalNode(node, 0, null, null), paint);
     }
-    private void goChild(KDimensionalNode current,  KDimensionalNode tempNode, boolean paint){
+    private String getStringNode(String label, Point point){
+        String ans = "";
+        ans += label + "(";
+        Vector vt = (Vector) point.getLocation();
+        int sz = vt.size();
+        for(int i=0; i<sz; i++){
+            if(i > 0) ans += ",";
+            ans += vt.get(i);
+        }
+        return ans + ")";
+    }
+    private synchronized void goChild(KDimensionalNode current,  KDimensionalNode tempNode, boolean paint){
+        
+        Process.addPointInsert(new Point2D(-1, -1), "");
 
         if(tempNode.greaterNode(current, current.getLevel() % super.getNumOfDimension())){
-            if(paint){
-                addTextDisplay(tempNode.getLabel() + " lon hon " + current.getLabel() + " nen di sang ben phai");
-            }
             updateNode(current.getLeftChild(), -60);
             if(current.getRightChild() == null){
+                
                 tempNode.setPos(current.getxPos() + 60, current.getyPos() + 100);
                 tempNode.setLevel(current.getLevel() + 1);
                 
@@ -78,18 +93,30 @@ public class KDimensionalTree extends Tree{
                     runAnimation(current.getxPos(), current.getyPos()
                             , current.getxPos() + 60, current.getyPos() + 100, true, "La con phai");
                 }
+                if(paint){
+                    String cur = getStringNode(current.getLabel(), current.getPoint());
+                    String tmp = getStringNode(tempNode.getLabel(), tempNode.getPoint());
+                    String text = "Gặp null, tạo nút biểu diễn cho  " +  tmp 
+                            + " đây là nút con phải của " + cur;
+                    addTextDisplay(text);
+                }
             }else{
                 if(paint){
                     runAnimation(current.getxPos(), current.getyPos()
                             , current.getRightChild().getxPos()
                             , current.getRightChild().getyPos(), false,"Di ve ben phai");
                 }
+                if(paint){
+                    String str = getStringNode(current.getLabel(), current.getPoint());
+                    String tmp = getStringNode(tempNode.getLabel(), tempNode.getPoint());
+                    String text = "Do nút " +  tmp + " có giá trị tọa độ thứ " 
+                            + current.getLevel() % super.getNumOfDimension() 
+                            + " lớn hơn giá trị của " + str + " nên ta rẽ phải.";
+                    addTextDisplay(text);
+                }
                 goChild(current.getRightChild(),tempNode, paint);
             }
         }else{
-            if(paint){
-                addTextDisplay(tempNode.getLabel() + " be hon " + current.getLabel() + "nen di sang ben trai");
-            }
             updateNode(current.getRightChild(), 60);
             if(current.getLeftChild() == null){
                 tempNode.setPos(current.getxPos() - 60, current.getyPos() + 100);
@@ -100,7 +127,13 @@ public class KDimensionalTree extends Tree{
                 if(paint){
                     runAnimation(current.getxPos(), current.getyPos()
                             , current.getxPos() - 60, current.getyPos() + 100, true, "La con trai");
-                    
+                }
+                if(paint){
+                    String cur = getStringNode(current.getLabel(), current.getPoint());
+                    String tmp = getStringNode(tempNode.getLabel(), tempNode.getPoint());
+                    String text = "Gặp null, tạo nút biểu diễn cho  " +  tmp 
+                            + " đây là nút con trái của " + cur;
+                    addTextDisplay(text);
                 }
             }else{
                 if(paint){
@@ -108,16 +141,24 @@ public class KDimensionalTree extends Tree{
                             , current.getLeftChild().getxPos()
                             , current.getLeftChild().getyPos(), false, "Di ve ben trai");
                 }
+                if(paint){
+                    String str = getStringNode(current.getLabel(), current.getPoint());
+                    String tmp = getStringNode(tempNode.getLabel(), tempNode.getPoint());
+                    String text = "Do nút " +  str + "đang ở cấp " + current.getLevel() 
+                            + " và giá trị tọa đồ thứ " + current.getLevel() % super.getNumOfDimension() 
+                            + " của " + tmp + " nhỏ hơn giá trị của " + str + " nên ta rẽ trái.";
+                    addTextDisplay(text);                    
+                }
                 goChild(current.getLeftChild(), tempNode, paint);
             }
         }
     }
     
-    private void runAnimation(int xs, int ys, int xf, int yf, boolean isLeave, String string){
+    private synchronized void runAnimation(int xs, int ys, int xf, int yf, boolean isLeave, String string){
 
         int u1 = (xf - xs);
         int u2 = (yf - ys);
-        
+        Process.addPointInsert(new Point2D(-1, -1), "Cai này đầu nè");
         for(double t = 0.0; t <= 1.0; t+= 0.001){
             int x = (int) (xs + t*u1);
             int y = (int) (ys + t*u2);
@@ -129,9 +170,10 @@ public class KDimensionalTree extends Tree{
         for(int i=0; i<100; i++){
             Process.addPointInsert(new Point2D(xf, yf),string);
         }
-        Process.addPointInsert(new Point2D(-1, -1), string);
+       // Process.addPointInsert(new Point2D(-1, -1), string);
     }
-    private void addTextDisplay(String string){
+    private synchronized void addTextDisplay(String string){
+        Process.addPointInsert(new Point2D(-1, -1), "");
         Process.addText(string);
     }
 

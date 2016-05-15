@@ -46,7 +46,8 @@ public class Dictionary{
         , COLLECTION_MANAGEMENT_TITLE("COLLECTION MANAGEMENT","QUẢN LÝ BỘ SƯU TẬP")
         , CHOOSE_COLLECTION("Choose collection","Chọn tài liệu")
         , DOCUMENT_MANAGEMENT("Document management","Quản lý tài liệu")
-        , ADD_NEW_DOCUMENT("Add new document","Thêm tài liệu mới");
+        , ADD_NEW_DOCUMENT("Add new document","Thêm tài liệu mới")
+        , BECAUSE_TREE_EMPTY("Because tree is empty", "Vì cây rỗng"), IS_ROOT("is root", "là gốc");
         private String stringEnglish, stringVietnamese;
         private Words(String str1, String str2){
             stringEnglish = str1;
@@ -123,7 +124,7 @@ public class Dictionary{
         , SKIP_FORWARD("skipForwardIcon.png"), PLAY_PAUSE("playPauseIcon.png")
         , PLAY_PAUSE_ACTIVE("playPauseActiveIcon.png"), BACKWARD("backwardIcon.png")
         , SKIP_BACKWARD("skipBackwardIcon.png"), PLAY("playIcon.png"), PAUSE("pauseIcon.png")
-        , SAVE("saveIcon.png");
+        , SAVE("saveIcon.png"), NOTE("note.png");
         private String stringValue;
         private Icons(String documents){
             stringValue = documents;
