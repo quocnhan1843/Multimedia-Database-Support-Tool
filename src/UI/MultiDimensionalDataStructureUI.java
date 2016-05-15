@@ -35,7 +35,7 @@ public class MultiDimensionalDataStructureUI extends javax.swing.JFrame{
         initComponents();
         setSizeMainUI();
         setComboBox();
-        //ShowText.main();
+        ShowText.main();
     }
 
     /**

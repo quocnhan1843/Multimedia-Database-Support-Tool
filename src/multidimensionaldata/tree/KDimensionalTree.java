@@ -55,6 +55,8 @@ public class KDimensionalTree extends Tree{
             this.setRoot(new KDimensionalNode(label, point));
             this.getRoot().setLevel(0);
             this.getRoot().setPos(12*3000 + 500, 50);
+            addTextDisplay("Do cay rong ne " + label + " la nut goc");
+            Process.addPointInsert(new Point2D(-1, -1), "");
             return;
         }
         goChild(this.root, new KDimensionalNode(node, 0, null, null), paint);
@@ -62,6 +64,9 @@ public class KDimensionalTree extends Tree{
     private void goChild(KDimensionalNode current,  KDimensionalNode tempNode, boolean paint){
 
         if(tempNode.greaterNode(current, current.getLevel() % super.getNumOfDimension())){
+            if(paint){
+                addTextDisplay(tempNode.getLabel() + " lon hon " + current.getLabel() + " nen di sang ben phai");
+            }
             updateNode(current.getLeftChild(), -60);
             if(current.getRightChild() == null){
                 tempNode.setPos(current.getxPos() + 60, current.getyPos() + 100);
@@ -69,16 +74,22 @@ public class KDimensionalTree extends Tree{
                 
                 current.setRightChild(tempNode);
                 
-                if(paint)
+                if(paint){
                     runAnimation(current.getxPos(), current.getyPos()
                             , current.getxPos() + 60, current.getyPos() + 100, true, "La con phai");
+                }
             }else{
-                if(paint)
+                if(paint){
                     runAnimation(current.getxPos(), current.getyPos()
-                            , current.getRightChild().getxPos(), current.getRightChild().getyPos(), false,"Di ve ben phai");
+                            , current.getRightChild().getxPos()
+                            , current.getRightChild().getyPos(), false,"Di ve ben phai");
+                }
                 goChild(current.getRightChild(),tempNode, paint);
             }
         }else{
+            if(paint){
+                addTextDisplay(tempNode.getLabel() + " be hon " + current.getLabel() + "nen di sang ben trai");
+            }
             updateNode(current.getRightChild(), 60);
             if(current.getLeftChild() == null){
                 tempNode.setPos(current.getxPos() - 60, current.getyPos() + 100);
@@ -86,13 +97,17 @@ public class KDimensionalTree extends Tree{
                 
                 current.setLeftChild(tempNode);
                 
-                if(paint)
+                if(paint){
                     runAnimation(current.getxPos(), current.getyPos()
                             , current.getxPos() - 60, current.getyPos() + 100, true, "La con trai");
+                    
+                }
             }else{
-                if(paint)
+                if(paint){
                     runAnimation(current.getxPos(), current.getyPos()
-                            , current.getLeftChild().getxPos(), current.getLeftChild().getyPos(), false, "Di ve ben trai");
+                            , current.getLeftChild().getxPos()
+                            , current.getLeftChild().getyPos(), false, "Di ve ben trai");
+                }
                 goChild(current.getLeftChild(), tempNode, paint);
             }
         }
@@ -115,7 +130,9 @@ public class KDimensionalTree extends Tree{
             Process.addPointInsert(new Point2D(xf, yf),string);
         }
         Process.addPointInsert(new Point2D(-1, -1), string);
-        //Process.addText(string);
+    }
+    private void addTextDisplay(String string){
+        Process.addText(string);
     }
 
     @Override

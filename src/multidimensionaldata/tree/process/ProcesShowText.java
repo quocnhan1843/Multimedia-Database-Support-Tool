@@ -18,6 +18,7 @@ public class ProcesShowText {
     
     public ProcesShowText(){
         vector = new Vector();
+        index = 0;
     }
     public void insertText(String text){
         vector.add(text);
@@ -27,6 +28,10 @@ public class ProcesShowText {
     }
     public void next(){
         if(index >= vector.size()) return;
+        
+        ShowText.addText((String) vector.get(index));
+        
+        index++;
         
     }
     public void reset(){

@@ -116,7 +116,7 @@ public class PointQuadTree extends Tree{
             if(isPaint){
                 runAnimation(current.getxPos(), current.getyPos()
                         , current.getNodeNW().getxPos(), current.getNodeNW().getyPos()
-                        , false, "chua co");
+                        , false, "con NW");
             }
             if(!ok){
                  addNode(current.getNodeNW(), pointQuadNode, isPaint);
@@ -133,7 +133,7 @@ public class PointQuadTree extends Tree{
             if(isPaint){
                 runAnimation(current.getxPos(), current.getyPos()
                         , current.getNodeNE().getxPos(), current.getNodeNE().getyPos()
-                        , false, "chua co");
+                        , false, "con NE");
             }
             if(!ok){
                 addNode(current.getNodeNE(), pointQuadNode, isPaint);
@@ -149,7 +149,7 @@ public class PointQuadTree extends Tree{
             if(isPaint){
                 runAnimation(current.getxPos(), current.getyPos()
                         , current.getNodeSE().getxPos(), current.getNodeSE().getyPos()
-                        , false, "chua co");
+                        , false, "con SE");
             }
             if(!ok){
                 addNode(current.getNodeSE(), pointQuadNode, isPaint);
@@ -165,7 +165,7 @@ public class PointQuadTree extends Tree{
             if(isPaint){
                 runAnimation(current.getxPos(), current.getyPos()
                         , current.getNodeSW().getxPos(), current.getNodeSW().getyPos()
-                        , false, "chua co");
+                        , false, "con SW");
             }
             if(!ok){
                 addNode(current.getNodeSW(), pointQuadNode, isPaint);
