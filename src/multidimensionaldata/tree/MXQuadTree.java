@@ -226,7 +226,7 @@ public class MXQuadTree extends Tree{
                                     j += a;
                                     continue;
                             }
-                            current = new MXQuadNode(Dictionary.Words.EMPTY_NODE.getString(), newPoint );
+                            current = new MXQuadNode(Dictionary.Words.EMPTY_NODE.getString(), new Point(i + a/4,j + a/2 + a/4) );
                             parent.setNodeNW(current);
                             current.setParent(parent);
                             j += a/2;
@@ -238,7 +238,7 @@ public class MXQuadTree extends Tree{
                                     j += a;
                                     continue;
                             }
-                            current = new MXQuadNode(Dictionary.Words.EMPTY_NODE.getString(), newPoint );
+                            current = new MXQuadNode(Dictionary.Words.EMPTY_NODE.getString(), new Point(i + a/2 + a/4,j + a/2 + a/4) );
                             parent.setNodeNE(current);
                             current.setParent(parent);
                             i += a/2;
@@ -250,7 +250,7 @@ public class MXQuadTree extends Tree{
                                     i += a;
                                     continue;
                             }
-                            current = new MXQuadNode(Dictionary.Words.EMPTY_NODE.getString(), newPoint);
+                            current = new MXQuadNode(Dictionary.Words.EMPTY_NODE.getString(), new Point(i + a/2 + a/4,j + a/4));
                             parent.setNodeSE(current);
                             current.setParent(parent);
                             i += a/2;
@@ -260,7 +260,7 @@ public class MXQuadTree extends Tree{
                                     a /= 2;
                                     continue;
                             }
-                            current = new MXQuadNode(Dictionary.Words.EMPTY_NODE.getString(), newPoint );
+                            current = new MXQuadNode(Dictionary.Words.EMPTY_NODE.getString(),new Point(i + a/4,j + a/4) );
                             parent.setNodeSW(current);
                             current.setParent(parent);
                     }
@@ -412,14 +412,20 @@ public class MXQuadTree extends Tree{
 
     @Override
     public void deleteNode(String label, Point point, boolean paint) {
-        super.setSizeDown();
         MXQuadNode mXQuadNode = searchNode(this.root, label, point, true, paint);
         deleteNode(mXQuadNode, paint);
+        if(paint){
+            Process.addPointDelete(new Point2D(0, 0));
+            Process.setNodeDelete(new InfoNode(label, point));
+        }
     }
 
     @Override
     public void searchNodeAndPaint(String label, Point point, boolean paint) {
-        
+        try{
+            MXQuadNode mXQuadNode = searchNode(root, label, point, false, paint);
+            mXQuadNode.setColor(Dictionary.COLOR.BACKGROUND_NODE_WHEN_CHOOSE.getColor());
+        }catch(NullPointerException ex){}
     }
 
     private void resetColor(MXQuadNode current) {
@@ -430,7 +436,8 @@ public class MXQuadTree extends Tree{
         resetColor(current.getNodeSW());
     }
 
-    private MXQuadNode searchNode(MXQuadNode current, String label, Point point, boolean andDelete, boolean paint) {
+    private MXQuadNode searchNode(MXQuadNode current, String label, Point point
+            , boolean andDelete, boolean paint) {
         if(current == null){
             if(paint){
                 Process.setNodeSearch(new InfoNode(label, point));
@@ -440,7 +447,7 @@ public class MXQuadTree extends Tree{
         if(current.getPoint().equalPoint(point) && current.getLabel().equals(label)){
             if(paint){
                 Process.setNodeSearch(new InfoNode(current.getLabel(), current.getPoint()));
-            }
+            }            
             return current;
         }
         
@@ -498,22 +505,32 @@ public class MXQuadTree extends Tree{
 
     private void deleteNode(MXQuadNode mXQuadNode, boolean isPaint){
         if(mXQuadNode == null) return;
-        MXQuadNode mX = mXQuadNode.getParent();
+        MXQuadNode mXQuadNodePatent = mXQuadNode.getParent();
         
-        if(mX == mXQuadNode) return;
+        Process.setNodeDelete(new InfoNode(mXQuadNode.getLabel(), mXQuadNode.getPoint()));
         
-        int p = positionChild(mXQuadNode.getPoint(), mX.getPoint());
+        int p = positionChild(mXQuadNodePatent.getPoint(), mXQuadNode.getPoint());
+              
+        
+        mXQuadNode.getPoint().print();
         
         if(p == 1){
-            mX.setNodeNW(null);
+            mXQuadNodePatent.setNodeNW(null);
         }else if(p == 2){
-            mX.setNodeNE(null);
+            mXQuadNodePatent.setNodeNE(null);
         }else if(p == 3){
-             mX.setNodeSE(null);
+             mXQuadNodePatent.setNodeSE(null);
         }else{
-             mX.setNodeSW(null);
+             mXQuadNodePatent.setNodeSW(null);
         }
-        deleteNode(mX, isPaint);
+        if(isPaint){
+            runAnimationSearch(mXQuadNode.getxPos(), mXQuadNode.getyPos()
+                    , mXQuadNodePatent.getxPos(), mXQuadNodePatent.getyPos(), false, "Lan len tren", false);
+        }
+        int numOfChild = mXQuadNodePatent.countChild();  
+        if(numOfChild == 0){
+            deleteNode(mXQuadNodePatent, isPaint);
+        }
     }
     private int positionChild(Point point1, Point point2){
         

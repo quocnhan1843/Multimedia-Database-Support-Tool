@@ -6,6 +6,7 @@
 package multidimensionaldata.tree;
 
 import UI.Dictionary;
+import com.sun.javafx.scene.traversal.Algorithm;
 import java.awt.Graphics2D;
 import java.util.Vector;
 
@@ -146,5 +147,11 @@ public class KDimensionalNode extends Node{
         	g.drawLine(this.getxPos() + 3*(width/4), this.getyPos() + dy*3
                         , this.getRightChild().getxPos() + width/2, this.getRightChild().getyPos());
         }
+    }
+    public void swapNodeKD(KDimensionalNode node){
+        super.swapNode(node);
+        int t = this.level;
+        this.level = node.getLevel();
+        node.level = t;
     }
 }

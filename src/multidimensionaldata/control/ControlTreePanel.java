@@ -55,6 +55,10 @@ import multidimensionaldata.tree.Tree;
  */
 public class ControlTreePanel extends JTabbedPane {
 
+    public static void removeRow(Node node) {
+        tableQueue.removeRow(node.getLabel(), node.getPoint().getLocation());
+    }
+
     
     private Tree tree;
 
@@ -960,14 +964,13 @@ public class ControlTreePanel extends JTabbedPane {
             int value = Integer.valueOf(textField.getText()).intValue();
             vectorValue.addElement(value);
         }
-        System.out.println("Nhan = " + label);
-        System.out.println("Point = " + new Point(vectorValue).print());
         if(label.equals("")){
             JOptionPane.showMessageDialog(panelDelete,Dictionary.Words.LABEL_NOT_EMPTY.getString());
             return;
         }
-
-        Process.removeNode(new InfoNode(label, new Point(vectorValue)));
+        Point p = new Point(vectorValue);
+        System.out.println("P ---------" + p.print());
+        Process.removeNode(new InfoNode(label, p));
         
         textLabelNodeDelete.setText("");
         clearText(vectorDeleteTextField);
@@ -975,7 +978,23 @@ public class ControlTreePanel extends JTabbedPane {
     }
 
     private void searchNode() {
+        Vector vectorValue = new Vector();
+        String label = textLabelNodeSearch.getText();
+        for(int i=0; i<vectorSearchTextField.size(); i++){
+            JTextField textField = (JTextField) vectorSearchTextField.get(i);
+            int value = Integer.valueOf(textField.getText()).intValue();
+            vectorValue.addElement(value);
+        }
+        if(label.equals("")){
+            JOptionPane.showMessageDialog(panelSearch,Dictionary.Words.LABEL_NOT_EMPTY.getString());
+            return;
+        }
+
+        Process.searchAndPaint(new InfoNode(label, new Point(vectorValue)));
         
+        textLabelNodeSearch.setText("");
+        clearText(vectorSearchTextField);
+        centerPanel.repaint();
     }
 
     private void changeTableQueue() {

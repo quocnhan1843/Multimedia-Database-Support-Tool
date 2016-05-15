@@ -79,4 +79,20 @@ public class MyTable extends JTable{
             }
         }
     }
+    public void removeRow(String label, Vector vector){
+        for(int i=0; i<this.getRowCount(); i++){
+            if(this.getValueAt(i, 0).toString().equals(label)){
+                boolean ok = true;
+                for(int j=1; j<this.getColumnCount(); j++){
+                    if(this.getValueAt(i, j).equals(vector.get(j-1)) == false){
+                        ok = false;
+                    }
+                }
+                if(ok){
+                    ((DefaultTableModel) this.getModel()).removeRow(i);
+                    return;
+                }
+            }
+        }
+    }
 }

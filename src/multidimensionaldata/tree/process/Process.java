@@ -65,7 +65,7 @@ public class Process implements Runnable{
         processSearch.setInfo(infoNode);
     }
     
-    public static void removeNode(InfoNode infoNode){
+    public static void removeNode(InfoNode infoNode){        
         treeMain.deleteNode(infoNode.getLabel(), infoNode.getPoint(), true);
     }
 

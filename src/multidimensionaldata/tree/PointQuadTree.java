@@ -266,8 +266,6 @@ public class PointQuadTree extends Tree{
     
     private void deleteNode(PointQuadNode pointQuadNode, boolean  isPaint){
         
-        
-        
         try{
             if(pointQuadNode == null) return;
             

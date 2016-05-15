@@ -19,7 +19,7 @@ public class Point {
     }
     
     public Point(Vector v) {
-        location = new Vector<>();
+        location = new Vector();
         v.stream().forEach((v1) -> {
             location.addElement(v1);
         });

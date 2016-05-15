@@ -153,4 +153,13 @@ public class MXQuadNode extends Node{
         this.setColor(matrixNode.getColor());
     }
     
+    public int countChild(){
+        int ans = 0;
+        if(nodeNW != null) ans++;
+        if(nodeNE != null) ans++;
+        if(nodeSE != null) ans++;
+        if(nodeSW != null) ans++;
+        return ans;       
+    }
+    
 }

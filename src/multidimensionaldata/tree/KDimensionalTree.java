@@ -144,8 +144,8 @@ public class KDimensionalTree extends Tree{
                 return;
             }
             removeNode(current, current.getLevel() % super.getNumOfDimension(), paint);
-//            if(this.root != null)
-//                updatePositionNode(this.root,this.root.getxPos(), this.root.getyPos());
+            if(this.root != null)
+                updatePositionNode(this.root,this.root.getxPos(), this.root.getyPos());
         }catch(NullPointerException nullPointerException){
             
         }
@@ -155,13 +155,13 @@ public class KDimensionalTree extends Tree{
         if(kDimensionalNode == null) return;
         kDimensionalNode.setPos(xPos, yPos);
         updatePositionNode(kDimensionalNode.getLeftChild(), xPos 
-                - (60*countChild(kDimensionalNode.getRightChild()) - 1), yPos + 100);
+                - (60*(countChild(kDimensionalNode.getRightChild()) + 1)), yPos + 100);
         updatePositionNode(kDimensionalNode.getRightChild(), xPos
-                + (60*countChild(kDimensionalNode.getLeftChild()) - 1), yPos + 100);
+                + (60*(countChild(kDimensionalNode.getLeftChild()) + 1)), yPos + 100);
     }
     
     private int countChild(KDimensionalNode kDimensionalNode){
-        if(kDimensionalNode == null) return 1;
+        if(kDimensionalNode == null) return 0;
         return 1 + countChild(kDimensionalNode.getLeftChild()) 
                 + countChild(kDimensionalNode.getRightChild());
     }
@@ -194,9 +194,11 @@ public class KDimensionalTree extends Tree{
                 return;
             }
             if(current.isLeftChild(current.getParent())){
+                ControlTreePanel.removeRow(current);
                 current.getParent().setLeftChild(null);
                 super.setSizeDown();
             }else{
+                ControlTreePanel.removeRow(current);
                 current.getParent().setRightChild(null);
                 super.setSizeDown();
             }
@@ -222,8 +224,9 @@ public class KDimensionalTree extends Tree{
         ControlTreePanel.swapValue(current.getLabel(),minNode.getLabel());
 //        Process.treePaint.setColor(current);
 //        Process.treePaint.setColor(minNode);
-        current.swapNode(minNode);
-        removeNode(minNode, k, paint);
+        current.swapNodeKD(minNode);
+        k = current.getLevel() % super.getNumOfDimension();
+        removeNode(minNode, k , paint);
     }
     
     private void updatePosAfterSwap(KDimensionalNode current, int distance){
