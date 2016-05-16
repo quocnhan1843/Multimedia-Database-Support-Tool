@@ -128,7 +128,7 @@ public class MXQuadNode extends Node{
         //Draw String
         g.setColor(Dictionary.COLOR.DEFAULT.getColor());
         if(this.getLabel().equals(Dictionary.Words.EMPTY_NODE.getString())){
-           // return;
+            return;
         }
         //if(!this.getLabel().equals(Words.EMPTY_NODE.getString()))
         g.drawString(this.getLabel(), (Math.max(width -  this.getLabel().length()*s,4))/2 + (x + 4) , y + dy - 1 );

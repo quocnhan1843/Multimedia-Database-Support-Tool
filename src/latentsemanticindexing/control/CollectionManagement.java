@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -407,7 +408,16 @@ public class CollectionManagement extends javax.swing.JFrame {
         itemXoa.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                int row = tableDocuments.getSelectedRow();
+                String name = tableDocuments.getModel().getValueAt(row, 0).toString();
+                
+                try {
+                    deleteDocument(name, getDatabaseName(comboBoxCollection.getSelectedItem().toString()));
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null
+                            , Dictionary.ERROR.ERROR.getString(), Dictionary.Words.DELETE_FAIL.getString()
+                            , JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         
@@ -440,33 +450,7 @@ public class CollectionManagement extends javax.swing.JFrame {
             popupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
     }//GEN-LAST:event_tableDocumentsMouseReleased
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            UIManager.setLookAndFeel(new SyntheticaBlueLightLookAndFeel());
-        } catch (ParseException | UnsupportedLookAndFeelException ex) {
-        }
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new CollectionManagement().setVisible(true);
-                } catch (Exception ex) {
-                    Logger.getLogger(CollectionManagement.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonDone;
@@ -522,5 +506,10 @@ public class CollectionManagement extends javax.swing.JFrame {
     
     public void changLang(){
         setLang();
+    }
+    private void deleteDocument(String name, String nameDatabase) throws Exception {
+        String sql = "DELETE FROM term_document WHERE id_document = '" 
+                + getIDTermWord(name, nameDatabase) + "'";
+        Data.setResultsetUpdate(sql, nameDatabase);
     }
 }

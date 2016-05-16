@@ -15,6 +15,7 @@ import java.util.Queue;
 import java.util.Stack;
 import java.util.Vector;
 import multidimensionaldata.tree.process.Process;
+import multidimensionaldata.tree.process.ShowText;
 
 /**
  *
@@ -94,6 +95,8 @@ public class PointQuadTree extends Tree{
         if(this.root == null){
             this.root = pointQuadNode;
             this.root.setPos(12*3000 + 500, 50);
+            if(isPaint)
+                addTextDisplay("Cây rỗng nên " + getStringNode(label, points) + " thành nút gốc");
         }else{
             addNode(this.root, pointQuadNode, isPaint);
         }
@@ -107,6 +110,11 @@ public class PointQuadTree extends Tree{
         if(priority == 1){
             ok = true;
             if(current.getNodeNW() == null){
+                if(isPaint)
+                    addTextDisplay("Gặp null +" 
+                            + getStringNode(pointQuadNode) 
+                            + " là thành còn NW của " 
+                            + getStringNode(current));
                 addChildToNode(current, pointQuadNode, priority);
                 updateLocation(root);
             }else{
@@ -117,6 +125,8 @@ public class PointQuadTree extends Tree{
                 runAnimation(current.getxPos(), current.getyPos()
                         , current.getNodeNW().getxPos(), current.getNodeNW().getyPos()
                         , false, "con NW");
+                addTextDisplay(getStringNode(pointQuadNode) + " thuộc nhánh NW của  " 
+                        + getStringNode(current) + ", ta rẽ sang nhánh NW");
             }
             if(!ok){
                  addNode(current.getNodeNW(), pointQuadNode, isPaint);
@@ -125,6 +135,11 @@ public class PointQuadTree extends Tree{
         }else if(priority == 2){
             ok = true;
             if(current.getNodeNE()== null){
+                if(isPaint)
+                    addTextDisplay("Gặp null +" 
+                            + getStringNode(pointQuadNode) 
+                            + " trở thành còn NE của " 
+                            + getStringNode(current));
                 addChildToNode(current, pointQuadNode, priority);
                 updateLocation(root);
             }else{
@@ -134,6 +149,8 @@ public class PointQuadTree extends Tree{
                 runAnimation(current.getxPos(), current.getyPos()
                         , current.getNodeNE().getxPos(), current.getNodeNE().getyPos()
                         , false, "con NE");
+                addTextDisplay(getStringNode(pointQuadNode) + " thuộc nhánh NE của  " 
+                        + getStringNode(current) + ", ta rẽ sang nhánh NE");
             }
             if(!ok){
                 addNode(current.getNodeNE(), pointQuadNode, isPaint);
@@ -141,6 +158,11 @@ public class PointQuadTree extends Tree{
         }else if(priority == 3){
             ok = true;
             if(current.getNodeSE()== null){
+                if(isPaint)
+                    addTextDisplay("Gặp null +" 
+                            + getStringNode(pointQuadNode) 
+                            + " trở thành còn SE của " 
+                            + getStringNode(current));
                 addChildToNode(current, pointQuadNode, priority);
                 updateLocation(root);
             }else{
@@ -150,6 +172,8 @@ public class PointQuadTree extends Tree{
                 runAnimation(current.getxPos(), current.getyPos()
                         , current.getNodeSE().getxPos(), current.getNodeSE().getyPos()
                         , false, "con SE");
+                addTextDisplay(getStringNode(pointQuadNode) + " thuộc nhánh SE của  " 
+                        + getStringNode(current) + ", ta rẽ sang nhánh SE");
             }
             if(!ok){
                 addNode(current.getNodeSE(), pointQuadNode, isPaint);
@@ -157,6 +181,11 @@ public class PointQuadTree extends Tree{
         }else{
             ok = true;
             if(current.getNodeSW()== null){
+                if(isPaint)
+                    addTextDisplay("Gặp null +" 
+                            + getStringNode(pointQuadNode) 
+                            + " trở thành còn SW của " 
+                            + getStringNode(current));
                 addChildToNode(current, pointQuadNode, priority);
                 updateLocation(root);
             }else{
@@ -166,6 +195,8 @@ public class PointQuadTree extends Tree{
                 runAnimation(current.getxPos(), current.getyPos()
                         , current.getNodeSW().getxPos(), current.getNodeSW().getyPos()
                         , false, "con SW");
+                addTextDisplay(getStringNode(pointQuadNode) + " thuộc nhánh SW của  " 
+                        + getStringNode(current) + ", ta rẽ sang nhánh SW");
             }
             if(!ok){
                 addNode(current.getNodeSW(), pointQuadNode, isPaint);
@@ -497,5 +528,32 @@ public class PointQuadTree extends Tree{
 
     private void paintNode(Graphics2D g, PointQuadNode node) {
     	node.paint(g);
+    }
+    private void addTextDisplay(String string){
+        ShowText.getInstace().addText(string);
+    }
+    
+    private String getStringNode(String label, Point point){
+        String ans = "";
+        ans += label + "(";
+        Vector vt = (Vector) point.getLocation();
+        int sz = vt.size();
+        for(int i=0; i<sz; i++){
+            if(i > 0) ans += ",";
+            ans += vt.get(i);
+        }
+        return ans + ")";
+    }
+    
+    private String getStringNode(Node node){
+        String ans = "";
+        ans += node.getLabel() + "(";
+        Vector vt = (Vector) node.getPoint().getLocation();
+        int sz = vt.size();
+        for(int i=0; i<sz; i++){
+            if(i > 0) ans += ",";
+            ans += vt.get(i);
+        }
+        return ans + ")";
     }
 }

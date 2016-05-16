@@ -8,7 +8,6 @@ package multidimensionaldata.tree;
 import UI.Dictionary;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
@@ -150,7 +149,7 @@ public class MXQuadTree extends Tree{
             }
         }
         
-        System.out.println("(" + xMin + ", " + yMin + ") - " + "(" + xMax + ", " + yMax + ")");
+        //System.out.println("(" + xMin + ", " + yMin + ") - " + "(" + xMax + ", " + yMax + ")");
 
         
         addNode(matrixQuadNode, isPaint);

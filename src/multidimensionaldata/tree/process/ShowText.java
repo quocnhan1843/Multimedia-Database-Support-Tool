@@ -7,10 +7,13 @@ package multidimensionaldata.tree.process;
 
 import UI.Dictionary;
 import com.csvreader.CsvWriter;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -140,7 +143,12 @@ public class ShowText extends javax.swing.JFrame {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
         String text = textAreaDiplay.getText();
-        saveText(text);
+        try {
+            saveText(text);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, Dictionary.ERROR.ERROR.getString(),
+                    "Lưu thất bái", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
@@ -163,7 +171,7 @@ public class ShowText extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private static String pathSave = FileSystemView.getFileSystemView().getHomeDirectory().getPath();
-    private void saveText(String text){
+    private void saveText(String text) throws IOException{
         String outputFile = readPathSave();
         
         if(!outputFile.equals("")){
@@ -172,20 +180,46 @@ public class ShowText extends javax.swing.JFrame {
             return;
         }
         
-	File file = new File(outputFile);	
+	File file = new File(outputFile);	        
         boolean alreadyExists = file.exists();
-        if (!alreadyExists){
-            writeFile(text, outputFile);
-        }else{
+        if (alreadyExists){
             int con = JOptionPane.showConfirmDialog(this
                     , Dictionary.CONFIRM.ALREADY_EXISTS.getString() + "\n"
                             + Dictionary.CONFIRM.REPLACE.getString()
                     , Dictionary.CONFIRM.CONFIRM.getString()
                     , JOptionPane.YES_NO_OPTION);
-            if(con == JOptionPane.YES_OPTION){
+            if(con == JOptionPane.NO_OPTION){
+                return;
+            }else{
                 file.delete();
-                writeFile(text, outputFile);
             }
+        }
+        
+        FileWriter fw = null;
+        BufferedWriter bw = null;
+        PrintWriter out = null;
+        try {
+            fw = new FileWriter(outputFile, true);
+            bw = new BufferedWriter(fw);
+            out = new PrintWriter(bw);
+            int s = 0;
+            for(int i=0; i<text.length(); i++){
+                if(text.charAt(i) == '.'){
+                    String sub = text.substring(s, i);
+                    s = i+1;
+                    out.println(sub);
+                }
+            }
+            
+            out.close();
+        }
+        finally {
+            if(out != null)
+                out.close();
+            if(bw != null)
+                    bw.close();
+            if(fw != null)
+                    fw.close();
         }
     }
     private String readPathSave(){

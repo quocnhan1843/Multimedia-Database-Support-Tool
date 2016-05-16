@@ -29,7 +29,7 @@ public class Dictionary{
         , LABEL("   Label","     Nhãn"), RADIO_LABEL("Label","Nhãn")
         , RADIO_POINT("Value","Tọa độ"), QUEUE("Queue", "Hàng đợi")
         , K_DIMENSIONNAL_TREE("K dimensional tree","Cây k chiều")
-        , POINT_QUADTREE("Point quadtree","Cây tứ phân điểm")
+        , POINT_QUADTREE("Point quadtree","Cây tứ phân điểm"), DELETE_FAIL("Delete document fail","Xóa tài liệu thất bại")
         , MATRIX_QUADTREE("Matrix quadtree","Cây tứ phân ma trận")
         , SELECT_TREE("Select tree","Chọn cây"), LABEL_NOT_EMPTY("Please, enter the label","Vui lòng, nhập nhãn")
         , SELECT_DIMENSION("Select dimension","Chọn số chiều"), SAVE("Save","Lưu")
