@@ -11,7 +11,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +31,7 @@ import javax.swing.table.TableColumn;
  *
  * @author quocn
  */
-public class Frequency extends Anlysis{
+public class Frequency extends JPanel{
     
     private JTabbedPane tabbedPane;
     
@@ -60,13 +59,9 @@ public class Frequency extends Anlysis{
         initStep2();
         
         this.tabbedPane.add(panelStep1);
-        this.tabbedPane.add(panelStep2);
-        
-        
+        this.tabbedPane.add(panelStep2);        
         
         loadTabName();
-        
-        this.setBorder(BorderFactory.createLineBorder(Color.red));
     }
     
     private void initStep1(){
@@ -99,29 +94,29 @@ public class Frequency extends Anlysis{
         
     }  
 
-    @Override
     public void loadTable(List<DataDocument> listIdDocument, 
             List<DataTermWord> listIdTermWord, HashMap listWordQR, String databaseName) {
         
         double[][] arr = new double[listIdDocument.size()][listIdTermWord.size()];
+        arr = Calculator.getFrequency(listIdDocument, listIdTermWord, databaseName);
         int sz = 0;
         
-        for(DataDocument idDocument: listIdDocument){
-            Vector vec = new Vector();
-            for(DataTermWord idTermWord:listIdTermWord){
-                String id= idTermWord.getId();
-                if(!id.equals("0")){
-                    double num = getNumber(id,idDocument, databaseName);
-                    vec.add(num);
-                }else{
-                    vec.add(0.0);
-                }
-            }
-            for(int i=0; i<vec.size(); i++){
-                arr[sz][i] = Double.valueOf(vec.get(i).toString());
-            }
-            sz++;
-        }
+//        for(DataDocument idDocument: listIdDocument){
+//            Vector vec = new Vector();
+//            for(DataTermWord idTermWord:listIdTermWord){
+//                String id= idTermWord.getId();
+//                if(!id.equals("0")){
+//                    double num = getNumber(id,idDocument, databaseName);
+//                    vec.add(num);
+//                }else{
+//                    vec.add(0.0);
+//                }
+//            }
+//            for(int i=0; i<vec.size(); i++){
+//                arr[sz][i] = Double.valueOf(vec.get(i).toString());
+//            }
+//            sz++;
+//        }
         
         delAllCol(tableStep1);
         addTblCol(tableStep1, "Term Words/ Documents");
@@ -156,20 +151,6 @@ public class Frequency extends Anlysis{
         }
         
         setTableStep2(arr, v2, listIdDocument, databaseName);
-    }
-
-    private double getNumber(String id, DataDocument idDocument, String databaseName) {
-        String sql = "select count from term_document where id_term = '"
-                   + id + "' and id_document = '" + idDocument.getId() + "'";
-        try{
-            ResultSet res = Data.Data.getResultsetQuery(sql, databaseName);
-            if(res.next()){
-                return res.getDouble(1);
-            }
-        }catch(Exception ex){
-            return 0;
-        }
-        return 0;
     }
     
     private void addTblCol(JTable table,String name) {
@@ -294,5 +275,9 @@ public class Frequency extends Anlysis{
         tableStep2.getColumnModel().getColumn(0).setPreferredWidth(100);
         tableStep2.getColumnModel().getColumn(1).setPreferredWidth(200);
         tableStep2.getColumnModel().getColumn(2).setPreferredWidth(5000);
+    }
+
+    public String getName() {
+        return Dictionary.TYPE.NORMAL.getString();
     }
 }

@@ -7,6 +7,8 @@ package latentsemanticindexing.control;
 
 import UI.Dictionary;
 import java.awt.FlowLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
@@ -20,12 +22,20 @@ public class ClassAnlysis extends JPanel{
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
         add(comboBox);
     }
+    private WindowsUI windowsUI;
+    public ClassAnlysis(WindowsUI windowsUI){
+        init();
+        this.setLayout(new FlowLayout(FlowLayout.LEFT));
+        add(comboBox);
+        this.windowsUI = windowsUI;
+    }
     
     private JComboBox comboBox;
     
     private void init(){
         comboBox = new JComboBox();
         addItem();
+        addLis();
     }
 
     private void addItem() {
@@ -41,4 +51,15 @@ public class ClassAnlysis extends JPanel{
     public String getType(){
         return comboBox.getSelectedItem().toString();
     }
+
+    private void addLis() {
+        comboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent ie) {
+                windowsUI.loadTable(comboBox.getSelectedIndex());
+            }
+        });
+    }
+    
+    
 }

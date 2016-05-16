@@ -6,18 +6,23 @@
 
 package latentsemanticindexing.control;
 
+import UI.Dictionary;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.JPanel;
 
 /**
  *
  * @author quocn
  */
-public class IF_IDF_SVD extends Anlysis{
+public class IF_IDF_SVD extends JPanel{
 
-    @Override
     public void loadTable(List<DataDocument> listIdDocument, List<DataTermWord> listIdTermWord, HashMap listWordQR, String databaseName) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+    }
+
+    public String getName() {
+        return Dictionary.TYPE.IF_IDF_SVD.getString();
     }
 
 }

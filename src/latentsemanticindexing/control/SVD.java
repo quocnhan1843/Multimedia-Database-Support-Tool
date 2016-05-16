@@ -5,18 +5,23 @@
  */
 package latentsemanticindexing.control;
 
+import UI.Dictionary;
+import com.sun.imageio.plugins.jpeg.JPEG;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.JPanel;
 
 /**
  *
  * @author quocn
  */
-public class SVD extends Anlysis{
+public class SVD extends JPanel{
 
-    @Override
     public void loadTable(List<DataDocument> listIdDocument, List<DataTermWord> listIdTermWord, HashMap listWordQR, String databaseName) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public String getName() {
+        return Dictionary.TYPE.SVD.getString();
     }
 
    

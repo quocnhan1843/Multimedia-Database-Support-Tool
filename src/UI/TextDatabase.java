@@ -26,7 +26,7 @@ import latentsemanticindexing.control.AddNewCollection;
 import latentsemanticindexing.control.AddQuery;
 import latentsemanticindexing.control.DataDocument;
 import latentsemanticindexing.control.DataTermWord;
-import latentsemanticindexing.control.DocumentsManagement;
+import latentsemanticindexing.control.CollectionManagement;
 import latentsemanticindexing.control.StopWords;
 import latentsemanticindexing.control.WindowsUI;
 
@@ -189,7 +189,7 @@ public class TextDatabase extends javax.swing.JFrame {
     private void buttonAddDocumentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddDocumentsActionPerformed
         try {
             // TODO add your handling code here:
-            DocumentsManagement.getInstance().setVisible(true);
+            CollectionManagement.getInstance().setVisible(true);
         } catch (Exception ex) {
         }
     }//GEN-LAST:event_buttonAddDocumentsActionPerformed

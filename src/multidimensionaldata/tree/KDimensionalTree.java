@@ -251,10 +251,18 @@ public class KDimensionalTree extends Tree{
     private void removeNode(KDimensionalNode current, int k, boolean paint) {
         if(current.isLeaves()){
             if(current.equals(root)){
+                
+                if(paint){
+                    addTextDisplay("Xóa nút " + getStringNode(current.getLabel(), current.getPoint()));
+                    addTextDisplay("Cây thành cây rỗng");
+                }
+                
                 this.root = null;
                 super.setSize(0);
                 return;
             }
+            if(paint)
+                addTextDisplay("Xóa nút " + getStringNode(current.getLabel(), current.getPoint()));
             if(current.isLeftChild(current.getParent())){
                 ControlTreePanel.removeRow(current);
                 current.getParent().setLeftChild(null);
@@ -269,14 +277,17 @@ public class KDimensionalTree extends Tree{
         KDimensionalNode minNode = new KDimensionalNode();
         if(current.getRightChild() != null){ // Truong hop co con phai
             if(paint)
-                addTextDisplay("Trường hợp có con phải. Tìm gá trị minnode nhánh phải");
+                addTextDisplay("Trường hợp có con phải. Tìm gá trị minnode nhánh phải của " 
+                        + getStringNode(current.getLabel(), current.getPoint()) );
             minNode = searchMinNode(current.getRightChild(), k);
             if(paint){
                 runAnimationSwap(current.getxPos(), current.getyPos(), minNode.getxPos(), minNode.getyPos());
             }
         }else{
             if(paint)// Truong hop khong co con phai
-                addTextDisplay("Trường hợp không có con phải (RightChild = null). Tìm gá trị minnode nhánh trái");
+                addTextDisplay("Trường hợp " + getStringNode(current.getLabel(), current.getPoint()) 
+                        + " không có con phải (RightChild = null). Tìm gá trị minnode nhánh trái của + " 
+                        +  getStringNode(current.getLabel(), current.getPoint()));
             minNode = searchMinNode(current.getLeftChild(), k);
             if(paint){                
                 runAnimationSwap(current.getxPos(), current.getyPos(), minNode.getxPos(), minNode.getyPos());

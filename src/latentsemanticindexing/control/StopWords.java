@@ -17,7 +17,7 @@ import java.util.Vector;
 public class StopWords {
     
     private static Vector treeStopWord;
-    private static StopWords instance;
+    private static StopWords instance = null;
     
     public StopWords(){
         init();
@@ -29,6 +29,10 @@ public class StopWords {
     }
     public static void createStopWords(){
         if(instance == null) instance = new StopWords();
+    }
+    public static StopWords getInstance(){
+        if(instance == null) instance = new StopWords();
+        return instance;
     }
     private void createList(){
         BufferedReader br = null;
@@ -70,6 +74,7 @@ public class StopWords {
         return treeStopWord.size();
     }
     public static boolean isStopWord(String string){
+        getInstance();
         int id = 0;
         for(int i=0; i<string.length(); i++){
             char c = string.charAt(i);

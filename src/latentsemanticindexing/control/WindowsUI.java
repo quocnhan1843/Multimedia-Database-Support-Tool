@@ -6,10 +6,12 @@
 package latentsemanticindexing.control;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 /**
@@ -19,18 +21,27 @@ import javax.swing.JPanel;
 public class WindowsUI extends JPanel{
     
     private ClassAnlysis topPanel;
-    private Anlysis centerPanel;
+    private JPanel centerPanel;
+    
+    private Frequency frequency_Type;
+    private IF_IDF tf_idf_Type;
+    private IF_IDF_SVD tf_idf_svd_Type;
+    private SVD svd_Type;
     
     public WindowsUI(){
         init();
         setLayout();
         setComponent();
-        setListener();        
     }
     
     private void init(){
-        topPanel = new ClassAnlysis();
-        centerPanel = Anlysis.createPanel(topPanel.getType());
+        topPanel = new ClassAnlysis(this);
+        frequency_Type = new Frequency();
+        tf_idf_Type = new IF_IDF();
+        tf_idf_svd_Type = new IF_IDF_SVD();
+        svd_Type = new SVD();
+        centerPanel = new JPanel();
+        
     }
     
     private void setLayout(){
@@ -39,24 +50,43 @@ public class WindowsUI extends JPanel{
     }
     
     private void setComponent(){
+        centerPanel.setLayout(new BorderLayout());
+        centerPanel.add(frequency_Type);
         this.add(topPanel, BorderLayout.NORTH);
         this.add(centerPanel, BorderLayout.CENTER);
     }
     
-    private void setListener(){
-        this.topPanel.getComboBox().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                centerPanel = (Anlysis) TableAnlysis.getWindows(topPanel.getComboBox().getSelectedItem().toString());
-            }
-        });
-    }
-    
     public void loadTable(List listIdDocument, List listIdTermWord, HashMap listWordQR, String databaseName){
         try{
-         centerPanel.loadTable(listIdDocument, listIdTermWord, listWordQR, databaseName);
+            frequency_Type.loadTable(listIdDocument, listIdTermWord, listWordQR, databaseName);
+            tf_idf_Type.loadTable(listIdDocument, listIdTermWord, listWordQR, databaseName);
+            tf_idf_svd_Type.loadTable(listIdDocument, listIdTermWord, listWordQR, databaseName);
+            svd_Type.loadTable(listIdDocument, listIdTermWord, listWordQR, databaseName);
         }catch(NullPointerException ex){
-            ex.printStackTrace();
+            //ex.printStackTrace();
+        }
+    }
+
+    public void loadTable(int index) {
+        try{
+            centerPanel.removeAll();
+            setCenterPanel(index);
+            centerPanel.revalidate();
+            centerPanel.repaint();
+        }catch(Exception ex){
+        }finally{            
+        }
+    }
+
+    private void setCenterPanel(int index) {
+        if(index == 0){
+            centerPanel.add(frequency_Type);
+        }else if(index == 1){
+            centerPanel.add(tf_idf_Type);
+        }else if(index == 2){
+            centerPanel.add(svd_Type);
+        }else{
+            centerPanel.add(tf_idf_svd_Type);
         }
     }
 }

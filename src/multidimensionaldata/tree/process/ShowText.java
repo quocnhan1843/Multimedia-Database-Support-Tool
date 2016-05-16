@@ -71,7 +71,7 @@ public class ShowText extends javax.swing.JFrame {
         setUndecorated(true);
 
         textAreaDiplay.setColumns(20);
-        textAreaDiplay.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        textAreaDiplay.setFont(new java.awt.Font("Tahoma", 0, 20)); // NOI18N
         textAreaDiplay.setRows(5);
         jScrollPane1.setViewportView(textAreaDiplay);
 

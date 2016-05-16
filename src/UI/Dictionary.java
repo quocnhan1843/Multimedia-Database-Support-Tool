@@ -136,7 +136,7 @@ public class Dictionary{
     }
     public enum Font_Size{
         TITLE(30), DEFAULT(14), TITLE_TAB(15), TITLE_CONTROL(24)
-        , TITLE_LOADFILE(20),FONT_LOG(18), TREE_TEXT(20);
+        , TITLE_LOADFILE(20),FONT_LOG(18), TREE_TEXT(20), TEXT_LARGE(20);
         private int value;
         private Font_Size(int vl){
             value = vl;

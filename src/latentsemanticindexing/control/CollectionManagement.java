@@ -8,6 +8,7 @@ package latentsemanticindexing.control;
 import Data.Data;
 import UI.Dictionary;
 import de.javasoft.plaf.synthetica.SyntheticaBlueLightLookAndFeel;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,9 +19,12 @@ import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDialog;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
@@ -29,15 +33,15 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author quocn
  */
-public class DocumentsManagement extends javax.swing.JFrame {
+public class CollectionManagement extends javax.swing.JFrame {
 
     /**
-     * Creates new form DocumentsManagement
+     * Creates new form CollectionManagement
      */
     
-    private static DocumentsManagement instance = null;
+    private static CollectionManagement instance = null;
     
-    public DocumentsManagement() throws Exception {
+    public CollectionManagement() throws Exception {
         initComponents();
         loadCollecionNames();
         loadCollectionData();
@@ -58,8 +62,8 @@ public class DocumentsManagement extends javax.swing.JFrame {
         comboBoxCollection.addItem(Dictionary.Words.ADD.getString() + "...");
     }
     
-    public static DocumentsManagement getInstance() throws Exception{
-        if(instance == null) instance = new DocumentsManagement();
+    public static CollectionManagement getInstance() throws Exception{
+        if(instance == null) instance = new CollectionManagement();
         instance.setLang();
         return instance;
     }
@@ -95,7 +99,7 @@ public class DocumentsManagement extends javax.swing.JFrame {
         labelTitile.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelTitile.setText("COLLECTION MANAGEMENT");
 
-        tableDocuments.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        tableDocuments.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         tableDocuments.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
@@ -395,14 +399,41 @@ public class DocumentsManagement extends javax.swing.JFrame {
         // TODO add your handling code here:
         JPopupMenu popupMenu = new JPopupMenu();
         JMenuItem itemXoa = new JMenuItem(Dictionary.Words.DELETE.getString());
+        JMenuItem itemXem = new JMenuItem(Dictionary.Words.VIEW.getString());
 
         popupMenu.add(itemXoa);
+        popupMenu.add(itemXem);
 
         itemXoa.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
             }
+        });
+        
+        itemXem.addActionListener(new ActionListener() {
+            @Override
+                public void actionPerformed(ActionEvent e) {
+                    try{
+                        int row = tableDocuments.getSelectedRow();
+
+                        String text = tableDocuments.getModel().getValueAt(row, 1).toString();
+                        String name = tableDocuments.getModel().getValueAt(row, 0).toString();
+                        JTextArea textArea = new JTextArea(text);
+
+                        JDialog dialog = new JDialog();
+                        dialog.setTitle(name);
+                        dialog.setModal(true);
+                        textArea.setFont(new Font(Dictionary.Font.DEFAULT.getString()
+                                , Font.PLAIN
+                                , Dictionary.Font_Size.DEFAULT.getValue()));
+                        dialog.setContentPane(new JScrollPane(textArea));
+                        dialog.setSize(700, 500);
+                        dialog.setLocationRelativeTo(null);
+                        dialog.setVisible(true);
+                        
+                    }catch(Exception ex){}
+                }
         });
 
         if (evt.isPopupTrigger() && evt.getComponent() instanceof JTable ) {
@@ -429,9 +460,9 @@ public class DocumentsManagement extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new DocumentsManagement().setVisible(true);
+                    new CollectionManagement().setVisible(true);
                 } catch (Exception ex) {
-                    Logger.getLogger(DocumentsManagement.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(CollectionManagement.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
