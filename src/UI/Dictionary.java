@@ -47,7 +47,8 @@ public class Dictionary{
         , CHOOSE_COLLECTION("Choose collection","Chọn tài liệu")
         , DOCUMENT_MANAGEMENT("Document management","Quản lý tài liệu")
         , ADD_NEW_DOCUMENT("Add new document","Thêm tài liệu mới")
-        , BECAUSE_TREE_EMPTY("Because tree is empty", "Vì cây rỗng"), IS_ROOT("is root", "là gốc");
+        , BECAUSE_TREE_EMPTY("Because tree is empty", "Vì cây rỗng"), IS_ROOT("is root", "là gốc")
+        , TURN_RIGHT("Turn right","Rẽ phải"), TURN_LEFT("Turn left", "Rẽ trái");
         private String stringEnglish, stringVietnamese;
         private Words(String str1, String str2){
             stringEnglish = str1;

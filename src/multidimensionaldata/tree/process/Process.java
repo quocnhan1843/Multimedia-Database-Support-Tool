@@ -42,7 +42,6 @@ public class Process implements Runnable{
     private static ProcessInsert processInsert = new ProcessInsert();
     private static ProcessDelete processDelete = new ProcessDeleteDimensional();
     private static ProcessSearch processSearch = new ProcessSearch();
-    private static ProcesShowText procesShowText = new ProcesShowText();
     
     private static long timeStart = System.currentTimeMillis();
     
@@ -74,13 +73,6 @@ public class Process implements Runnable{
 
     public static void clearComponents() {
         processInsert.clear();
-    }
-    
-    public static void addText(String text){
-        procesShowText.insertText(text);
-    }
-    public static void nextText(){
-        procesShowText.next();
     }
 
     public static void setTreePaint(Tree tree) {
@@ -219,5 +211,14 @@ public class Process implements Runnable{
     
     public Tree getTreePaint(){
         return treePaint;
+    }
+    public static void reset(){
+        processInsert = new ProcessInsert();
+        processDelete = new ProcessDeleteDimensional();
+        processSearch = new ProcessSearch();
+        
+        processInsert.clear();
+        processDelete.reset();
+        processSearch.reset();
     }
 }

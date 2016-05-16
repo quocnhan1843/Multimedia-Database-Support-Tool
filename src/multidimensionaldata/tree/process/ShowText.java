@@ -5,7 +5,19 @@
  */
 package multidimensionaldata.tree.process;
 
+import UI.Dictionary;
+import com.csvreader.CsvWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
+import javax.swing.table.DefaultTableModel;
+import static multidimensionaldata.control.ControlTreePanel.tableQueue;
 
 /**
  *
@@ -29,9 +41,13 @@ public class ShowText extends javax.swing.JFrame {
         return instance;
     }
     
-    public static void addText(String st){
-        getInstace().setVisible(true);
-        st += "\n";
+    public static void setInstace(){
+       text = "";
+    }
+    
+    public void addText(String st){
+//        getInstace().setVisible(true);
+        st += ".\n";
         text += st;
         textAreaDiplay.setText(text);
     }
@@ -49,15 +65,13 @@ public class ShowText extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         textAreaDiplay = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setAlwaysOnTop(true);
         setUndecorated(true);
-        setResizable(false);
 
         textAreaDiplay.setColumns(20);
+        textAreaDiplay.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         textAreaDiplay.setRows(5);
         jScrollPane1.setViewportView(textAreaDiplay);
 
@@ -68,20 +82,21 @@ public class ShowText extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/refresh.png"))); // NOI18N
-
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/save.png"))); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 946, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -91,8 +106,7 @@ public class ShowText extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 404, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -123,6 +137,12 @@ public class ShowText extends javax.swing.JFrame {
         text = "";
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        String text = textAreaDiplay.getText();
+        saveText(text);
+    }//GEN-LAST:event_jButton4ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -136,10 +156,59 @@ public class ShowText extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private static javax.swing.JTextArea textAreaDiplay;
+    private javax.swing.JTextArea textAreaDiplay;
     // End of variables declaration//GEN-END:variables
+
+    private static String pathSave = FileSystemView.getFileSystemView().getHomeDirectory().getPath();
+    private void saveText(String text){
+        String outputFile = readPathSave();
+        
+        if(!outputFile.equals("")){
+            pathSave = outputFile;
+        }else{
+            return;
+        }
+        
+	File file = new File(outputFile);	
+        boolean alreadyExists = file.exists();
+        if (!alreadyExists){
+            writeFile(text, outputFile);
+        }else{
+            int con = JOptionPane.showConfirmDialog(this
+                    , Dictionary.CONFIRM.ALREADY_EXISTS.getString() + "\n"
+                            + Dictionary.CONFIRM.REPLACE.getString()
+                    , Dictionary.CONFIRM.CONFIRM.getString()
+                    , JOptionPane.YES_NO_OPTION);
+            if(con == JOptionPane.YES_OPTION){
+                file.delete();
+                writeFile(text, outputFile);
+            }
+        }
+    }
+    private String readPathSave(){
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter txtFile = new FileNameExtensionFilter("Text(.txt)", "txt");
+        chooser.addChoosableFileFilter(txtFile);
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.setCurrentDirectory(new File(pathSave));
+        int retrival = chooser.showSaveDialog(null);
+        if (retrival == JFileChooser.APPROVE_OPTION) {
+            String path = chooser.getSelectedFile().getPath();
+            if(path.substring(path.length() - 4).equals(".txt") == false) path += ".txt";
+            return path;
+        }
+        return "";
+    }
+    private void writeFile(String text, String path){
+        try {
+            try(PrintWriter out = new PrintWriter( path )  ){
+                out.println( text );
+            }
+        } catch (IOException e) {
+               // e.printStackTrace();
+        }
+    }
 }

@@ -37,7 +37,7 @@ public class ProcessSearch {
         return index >= vectorSearch.size();
     }
     
-    private void reset(){
+    public void reset(){
         vectorSearch.clear();
         index = 0;
         xPos = yPos = 0;

@@ -12,7 +12,6 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.util.Vector;
 import multidimensionaldata.control.ControlTreePanel;
-import multidimensionaldata.tree.process.ProcesShowText;
 import multidimensionaldata.tree.process.ShowText;
 
 /**
@@ -52,6 +51,7 @@ public class KDimensionalTree extends Tree{
     @Override
     public void insertNode(String label, Point point, boolean paint) {
         Node node = new KDimensionalNode(label, point);
+        if(paint) addTextDisplay("\n=>THÊM NÚT " + getStringNode(label, point));
         super.setSizeUp();
         if(this.searchNodePreInsert(node)) return;
         if(this.root == null){
@@ -59,7 +59,7 @@ public class KDimensionalTree extends Tree{
             this.getRoot().setLevel(0);
             this.getRoot().setPos(12*3000 + 500, 50);
             if(paint){
-                ShowText.addText("Vì cây rỗng nên nút " + getStringNode(label, point) + " trở thành nút gốc." );
+                addTextDisplay("Vì cây rỗng nên nút " + getStringNode(label, point) + " trở thành nút gốc." );
             }
             return;
         }
@@ -76,12 +76,18 @@ public class KDimensionalTree extends Tree{
         }
         return ans + ")";
     }
-    private synchronized void goChild(KDimensionalNode current,  KDimensionalNode tempNode, boolean paint){
-        
-        Process.addPointInsert(new Point2D(-1, -1), "");
+    private void goChild(KDimensionalNode current,  KDimensionalNode tempNode, boolean paint){
 
         if(tempNode.greaterNode(current, current.getLevel() % super.getNumOfDimension())){
             updateNode(current.getLeftChild(), -60);
+            if(paint){
+                String str = getStringNode(current.getLabel(), current.getPoint());
+                String tmp = getStringNode(tempNode.getLabel(), tempNode.getPoint());
+                String text = "Nút " +  tmp + " có giá trị tọa độ thứ " 
+                        + (int )(current.getLevel() % super.getNumOfDimension() + 1)
+                        + " lớn hơn giá trị của " + str + " nên ta rẽ phải";
+                addTextDisplay(text);
+            }
             if(current.getRightChild() == null){
                 
                 tempNode.setPos(current.getxPos() + 60, current.getyPos() + 100);
@@ -91,7 +97,8 @@ public class KDimensionalTree extends Tree{
                 
                 if(paint){
                     runAnimation(current.getxPos(), current.getyPos()
-                            , current.getxPos() + 60, current.getyPos() + 100, true, "La con phai");
+                            , current.getxPos() + 60, current.getyPos() + 100, true
+                            , Dictionary.Words.TURN_RIGHT.getString());
                 }
                 if(paint){
                     String cur = getStringNode(current.getLabel(), current.getPoint());
@@ -104,19 +111,20 @@ public class KDimensionalTree extends Tree{
                 if(paint){
                     runAnimation(current.getxPos(), current.getyPos()
                             , current.getRightChild().getxPos()
-                            , current.getRightChild().getyPos(), false,"Di ve ben phai");
-                }
-                if(paint){
-                    String str = getStringNode(current.getLabel(), current.getPoint());
-                    String tmp = getStringNode(tempNode.getLabel(), tempNode.getPoint());
-                    String text = "Do nút " +  tmp + " có giá trị tọa độ thứ " 
-                            + current.getLevel() % super.getNumOfDimension() 
-                            + " lớn hơn giá trị của " + str + " nên ta rẽ phải.";
-                    addTextDisplay(text);
+                            , current.getRightChild().getyPos(), false
+                            , Dictionary.Words.TURN_RIGHT.getString());
                 }
                 goChild(current.getRightChild(),tempNode, paint);
             }
         }else{
+            if(paint){
+                String str = getStringNode(current.getLabel(), current.getPoint());
+                String tmp = getStringNode(tempNode.getLabel(), tempNode.getPoint());
+                String text = "Nút " +  tmp + " có giá trị tọa độ thứ " 
+                        + (int )(current.getLevel() % super.getNumOfDimension() + 1)
+                        + " nhỏ hơn giá trị của " + str + " nên ta rẽ trái";
+                addTextDisplay(text);
+            }
             updateNode(current.getRightChild(), 60);
             if(current.getLeftChild() == null){
                 tempNode.setPos(current.getxPos() - 60, current.getyPos() + 100);
@@ -126,7 +134,8 @@ public class KDimensionalTree extends Tree{
                 
                 if(paint){
                     runAnimation(current.getxPos(), current.getyPos()
-                            , current.getxPos() - 60, current.getyPos() + 100, true, "La con trai");
+                            , current.getxPos() - 60, current.getyPos() + 100, true
+                            , Dictionary.Words.TURN_LEFT.getString());
                 }
                 if(paint){
                     String cur = getStringNode(current.getLabel(), current.getPoint());
@@ -139,26 +148,18 @@ public class KDimensionalTree extends Tree{
                 if(paint){
                     runAnimation(current.getxPos(), current.getyPos()
                             , current.getLeftChild().getxPos()
-                            , current.getLeftChild().getyPos(), false, "Di ve ben trai");
-                }
-                if(paint){
-                    String str = getStringNode(current.getLabel(), current.getPoint());
-                    String tmp = getStringNode(tempNode.getLabel(), tempNode.getPoint());
-                    String text = "Do nút " +  str + "đang ở cấp " + current.getLevel() 
-                            + " và giá trị tọa đồ thứ " + current.getLevel() % super.getNumOfDimension() 
-                            + " của " + tmp + " nhỏ hơn giá trị của " + str + " nên ta rẽ trái.";
-                    addTextDisplay(text);                    
+                            , current.getLeftChild().getyPos(), false
+                            , Dictionary.Words.TURN_LEFT.getString());
                 }
                 goChild(current.getLeftChild(), tempNode, paint);
             }
         }
     }
     
-    private synchronized void runAnimation(int xs, int ys, int xf, int yf, boolean isLeave, String string){
+    private void runAnimation(int xs, int ys, int xf, int yf, boolean isLeave, String string){
 
         int u1 = (xf - xs);
         int u2 = (yf - ys);
-        Process.addPointInsert(new Point2D(-1, -1), "Cai này đầu nè");
         for(double t = 0.0; t <= 1.0; t+= 0.001){
             int x = (int) (xs + t*u1);
             int y = (int) (ys + t*u2);
@@ -170,19 +171,19 @@ public class KDimensionalTree extends Tree{
         for(int i=0; i<100; i++){
             Process.addPointInsert(new Point2D(xf, yf),string);
         }
-       // Process.addPointInsert(new Point2D(-1, -1), string);
     }
-    private synchronized void addTextDisplay(String string){
-        Process.addPointInsert(new Point2D(-1, -1), "");
-        Process.addText(string);
+    private void addTextDisplay(String string){
+        ShowText.getInstace().addText(string);
     }
 
     @Override
     public void deleteNode(String label, Point point, boolean paint) {
         try{
             KDimensionalNode kDimensionalNode  = new KDimensionalNode(label, point);
+            if(paint){
+                addTextDisplay("\n=>XÓA NÚT " + getStringNode(label, point));
+            }            
             KDimensionalNode current = searchNode(this.root, kDimensionalNode, paint);
-            System.out.println(current.getPoint().print());
             if(current == null){
                 return;
             }
@@ -266,16 +267,22 @@ public class KDimensionalTree extends Tree{
             return;
         }
         KDimensionalNode minNode = new KDimensionalNode();
-        if(current.getRightChild() != null){ // Truong hop co con phai    
+        if(current.getRightChild() != null){ // Truong hop co con phai
+            if(paint)
+                addTextDisplay("Trường hợp có con phải. Tìm gá trị minnode nhánh phải");
             minNode = searchMinNode(current.getRightChild(), k);
             if(paint){
                 runAnimationSwap(current.getxPos(), current.getyPos(), minNode.getxPos(), minNode.getyPos());
             }
-        }else{                               // Truong hop khong co con phai
+        }else{
+            if(paint)// Truong hop khong co con phai
+                addTextDisplay("Trường hợp không có con phải (RightChild = null). Tìm gá trị minnode nhánh trái");
             minNode = searchMinNode(current.getLeftChild(), k);
             if(paint){                
                 runAnimationSwap(current.getxPos(), current.getyPos(), minNode.getxPos(), minNode.getyPos());
             }
+            if(paint)
+                addTextDisplay("Chuyển con trái thành con phải");
             current.setRightChild(current.getLeftChild());
             current.setLeftChild(null);
         }
@@ -285,6 +292,10 @@ public class KDimensionalTree extends Tree{
         ControlTreePanel.swapValue(current.getLabel(),minNode.getLabel());
 //        Process.treePaint.setColor(current);
 //        Process.treePaint.setColor(minNode);
+        if(paint)
+            addTextDisplay("Hoán đổi giá trị nut " 
+                + getStringNode(current.getLabel(), current.getPoint()) 
+                + " và " + getStringNode(minNode.getLabel(), minNode.getPoint()));
         current.swapNodeKD(minNode);
         k = current.getLevel() % super.getNumOfDimension();
         removeNode(minNode, k , paint);
@@ -375,27 +386,51 @@ public class KDimensionalTree extends Tree{
 
     private KDimensionalNode searchNode(KDimensionalNode current, KDimensionalNode node, boolean paint){
         if(current == null){
+            if(paint)
+                addTextDisplay("Nút = null, không tìm gặp nút " 
+                    + getStringNode(current.getLabel(), current.getPoint()) + " có trên cây");
             Process.setNodeSearch(new InfoNode(node.getLabel(), node.getPoint()));
             return null;
         }
         if(current.equalNode(node)){
+            if(paint)
+                addTextDisplay("Tìm gặp nút " 
+                    + getStringNode(current.getLabel(), current.getPoint()) + " có trên cây");
             Process.setNodeSearch(new InfoNode(node.getLabel(), node.getPoint()));
             return current;
         }
         if(node.greaterNode(current, current.getLevel()% super.getNumOfDimension())){
             
             if(paint){
-                if(current.getRightChild()!= null)
+                
+                String str = getStringNode(current.getLabel(), current.getPoint());
+                String tmp = getStringNode(node.getLabel(), node.getPoint());
+                String text = "Nút " +  tmp + " có giá trị tọa độ thứ " 
+                        + (int )(current.getLevel() % super.getNumOfDimension() + 1)
+                        + " lớn hơn giá trị của " + str + " nên ta rẽ phải";
+                addTextDisplay(text);
+                
+                if(current.getRightChild()!= null){
                     runAnimationSearch(current.getxPos(), current.getyPos()
                                     , current.getRightChild().getxPos(), current.getRightChild().getyPos(), paint);
+                }
             }
             
             return searchNode(current.getRightChild(), node, paint);
         }
         if(paint){
-            if(current.getLeftChild() != null)
+            
+            String str = getStringNode(current.getLabel(), current.getPoint());
+                String tmp = getStringNode(node.getLabel(), node.getPoint());
+                String text = "Nút " +  tmp + " có giá trị tọa độ thứ " 
+                        + (int )(current.getLevel() % super.getNumOfDimension() + 1)
+                        + " nhỏ hơn giá trị của " + str + " nên ta rẽ trái";
+                addTextDisplay(text);
+            
+            if(current.getLeftChild() != null){
                 runAnimationSearch(current.getxPos(), current.getyPos()
                     , current.getLeftChild().getxPos(), current.getLeftChild().getyPos(), paint);
+            }
         }
         return searchNode(current.getLeftChild(), node, paint);
     }
@@ -455,6 +490,7 @@ public class KDimensionalTree extends Tree{
     public void searchNodeAndPaint(String label, Point point, boolean paint) {
         try{
             KDimensionalNode kDimensionalNode = new KDimensionalNode(label, point);
+            addTextDisplay("\n=>TÌM KIẾM NÚT " + getStringNode(label, point));
             KDimensionalNode nodeSearch = searchNode(this.root, kDimensionalNode, paint);
             nodeSearch.setColor(Dictionary.COLOR.BACKGROUND_NODE_WHEN_CHOOSE.getColor());
         }catch(NullPointerException nullPointerException){
