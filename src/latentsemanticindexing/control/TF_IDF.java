@@ -16,6 +16,8 @@ import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -31,7 +33,7 @@ import javax.swing.table.TableColumn;
  *
  * @author quocn
  */
-public class IF_IDF extends JPanel{
+public class TF_IDF extends JPanel{
     
     private JTabbedPane tabbedPane;
     
@@ -47,7 +49,15 @@ public class IF_IDF extends JPanel{
     private JPanel panelStep3;
     private JScrollPane scrollPaneStep3;
     
-    public IF_IDF(){
+    private JTable tableStep4;
+    private JPanel panelStep4;
+    private JScrollPane scrollPaneStep4;
+    
+    private JTable tableStep5;
+    private JPanel panelStep5;
+    private JScrollPane scrollPaneStep5;
+    
+    public TF_IDF(){
         //super();
         init();
         addLis();
@@ -62,10 +72,14 @@ public class IF_IDF extends JPanel{
         initStep1();
         initStep2();
         initStep3();
+        initStep4();
+        initStep5();
         
         this.tabbedPane.add(panelStep1);
         this.tabbedPane.add(panelStep2);        
         this.tabbedPane.add(panelStep3);   
+        this.tabbedPane.add(panelStep4);
+        this.tabbedPane.add(panelStep5);   
         
         loadTabName();
     }
@@ -92,6 +106,20 @@ public class IF_IDF extends JPanel{
         setScrollPaneStep3();
         this.panelStep3.add(scrollPaneStep3);
     }
+    private void initStep4(){
+        tableStep4 = new JTable();
+        panelStep4 = new JPanel();
+        panelStep4.setLayout(new GridLayout(1, 1));
+        setScrollPaneStep4();
+        this.panelStep4.add(scrollPaneStep4);
+    }
+    private void initStep5(){
+        tableStep5 = new JTable();
+        panelStep5 = new JPanel();
+        panelStep5.setLayout(new GridLayout(1, 1));
+        setScrollPaneStep5();
+        this.panelStep5.add(scrollPaneStep5);
+    }
 
     private void setScrollPaneStep1() {
         scrollPaneStep1 = new JScrollPane(tableStep1
@@ -114,13 +142,28 @@ public class IF_IDF extends JPanel{
         tableStep3.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         
     }  
+    
+    private void setScrollPaneStep4() {
+        scrollPaneStep4 = new JScrollPane(tableStep4
+                , JScrollPane.VERTICAL_SCROLLBAR_ALWAYS
+                , JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        tableStep4.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        
+    } 
+    
+    private void setScrollPaneStep5() {
+        scrollPaneStep5 = new JScrollPane(tableStep5
+                , JScrollPane.VERTICAL_SCROLLBAR_ALWAYS
+                , JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        tableStep5.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        
+    } 
 
     public void loadTable(List<DataDocument> listIdDocument, 
             List<DataTermWord> listIdTermWord, HashMap listWordQR, String databaseName) {
         
         double[][] arr = new double[listIdDocument.size()][listIdTermWord.size()];
         arr = Calculator.getFrequency(listIdDocument, listIdTermWord, databaseName);
-        int sz = 0;
         
         delAllCol(tableStep1);
         addTblCol(tableStep1, "Term Words/ Documents");
@@ -149,12 +192,16 @@ public class IF_IDF extends JPanel{
         
         
         addTblRow(tableStep1, v);
-        Vector v2 = new Vector();
+        Vector vectorQuery = new Vector();
         for(int i=1; i<v.size(); i++){
-            v2.addElement(v.get(i));
+            vectorQuery.addElement(v.get(i));
         }
         
-        setTableStep2(arr, v2, listIdDocument, databaseName);
+        try {
+            setTableStep234(arr, vectorQuery, listIdDocument, listIdTermWord, listWordQR, databaseName);
+        } catch (Exception ex) {
+            //ex.printStackTrace();
+        }
     }
     
     private void addTblCol(JTable table,String name) {
@@ -188,12 +235,14 @@ public class IF_IDF extends JPanel{
     }
 
     private void loadTabName() {
-        this.tabbedPane.setTitleAt(0, "Step 1");
-        this.tabbedPane.setTitleAt(1, "Step 2");
-        this.tabbedPane.setTitleAt(2, "Step 3");
+        this.tabbedPane.setTitleAt(0, "Frequency");
+        this.tabbedPane.setTitleAt(1, "tf");
+        this.tabbedPane.setTitleAt(2, "idf");
+        this.tabbedPane.setTitleAt(3, "if*idf");
+        this.tabbedPane.setTitleAt(4, "Cosin distance");
     }
     
-    private void setTableStep2(double[][] arr, Vector v, List<DataDocument> listIdDocument, String databaseName) {
+    private void setTableStep3(double[][] arr, Vector v, List<DataDocument> listIdDocument, String databaseName) {
         delAllCol(tableStep2);
         addTblCol(tableStep2, Dictionary.Words.SCORE.getString());
         addTblCol(tableStep2, Dictionary.Words.NAME_DOCUMENT.getString());
@@ -237,7 +286,7 @@ public class IF_IDF extends JPanel{
     }
 
     private void addLis() {
-        tableStep2.addMouseListener(new java.awt.event.MouseAdapter() {
+        tableStep5.addMouseListener(new java.awt.event.MouseAdapter() {
             
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 JPopupMenu popupMenu = new JPopupMenu();
@@ -250,10 +299,10 @@ public class IF_IDF extends JPanel{
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try{
-                        int row = tableStep2.getSelectedRow();
+                        int row = tableStep5.getSelectedRow();
 
-                        String text = tableStep2.getModel().getValueAt(row, 2).toString();
-                        String name = tableStep2.getModel().getValueAt(row, 1).toString();;
+                        String text = tableStep5.getModel().getValueAt(row, 2).toString();
+                        String name = tableStep5.getModel().getValueAt(row, 1).toString();;
 
                         JDialog dialog = new JDialog();
                         dialog.setTitle(name);
@@ -276,14 +325,106 @@ public class IF_IDF extends JPanel{
     }
     
     private void loadSizeTable2(){
-        tableStep2.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tableStep2.getColumnModel().getColumn(0).setPreferredWidth(100);
-        tableStep2.getColumnModel().getColumn(1).setPreferredWidth(200);
-        tableStep2.getColumnModel().getColumn(2).setPreferredWidth(5000);
+        tableStep5.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        tableStep5.getColumnModel().getColumn(0).setPreferredWidth(100);
+        tableStep5.getColumnModel().getColumn(1).setPreferredWidth(200);
+        tableStep5.getColumnModel().getColumn(2).setPreferredWidth(5000);
     }
 
     @Override
     public String getName() {
         return Dictionary.TYPE.NORMAL.getString();
+    }
+
+    private void setTableStep234(double[][] arr1, Vector v2
+            , List<DataDocument> listIdDocument
+            , List<DataTermWord> listIdTermWord
+            , HashMap listWordQR, String databaseName) throws Exception {
+        
+        double TF[][] = TF_IDF_Calculator.getTF(arr1, v2);
+        double IDF[] = TF_IDF_Calculator.getIDF(arr1, v2);
+        
+        double[][] valueTF_IDF = new double[TF.length][TF[0].length];
+        
+        for(int i=0; i<TF.length; i++){
+            for(int j=0; j<TF[i].length; j++){
+                valueTF_IDF[i][j] = TF[i][j] * IDF[j];
+            }
+        }
+        
+        //=================================table 2===========
+        delAllCol(tableStep2);
+        addTblCol(tableStep2, "Term Words/ Documents");
+        for(DataTermWord ob:listIdTermWord){
+            addTblCol(tableStep2, ob.getName());
+        }
+        
+        for(int i=0; i < TF.length; i++){
+            Vector vector = new Vector();
+            if(i < TF.length - 1) vector.addElement(listIdDocument.get(i).getName());
+            else vector.addElement("#QUERY");
+            for(int j = 0; j<TF[i].length; j++){
+                vector.addElement(TF[i][j]);
+            }
+            addTblRow(tableStep2, vector);
+        }
+        //=================================table 3===========
+        delAllCol(tableStep3);
+        addTblCol(tableStep3, "Term Words/ Documents");
+        for(DataTermWord ob:listIdTermWord){
+            addTblCol(tableStep3, ob.getName());
+        }
+        Vector vectorIDF = new Vector();
+        vectorIDF.addElement("Collection");
+        for(int i=0; i < IDF.length; i++){
+            vectorIDF.addElement(IDF[i]);
+        }
+        addTblRow(tableStep3, vectorIDF);
+        //=================================table 4===========
+        delAllCol(tableStep4);
+        addTblCol(tableStep4, "Term Words/ Documents");
+        for(DataTermWord ob:listIdTermWord){
+            addTblCol(tableStep4, ob.getName());
+        }
+        
+        for(int i=0; i < valueTF_IDF.length; i++){
+            Vector vector = new Vector();
+            if(i < valueTF_IDF.length - 1) vector.addElement(listIdDocument.get(i).getName());
+            else vector.addElement("#QUERY");
+            for(int j = 0; j<valueTF_IDF[i].length; j++){
+                vector.addElement(valueTF_IDF[i][j]);
+            }
+            addTblRow(tableStep4, vector);
+        }
+        
+        //===========================Bang 5 tinh cosin
+        delAllCol(tableStep5);
+        addTblCol(tableStep5, Dictionary.Words.SCORE.getString());
+        addTblCol(tableStep5, Dictionary.Words.NAME_DOCUMENT.getString());
+        addTblCol(tableStep5, Dictionary.Words.TEXT.getString());
+        
+        loadSizeTable5();
+        
+        DefaultTableModel model = (DefaultTableModel) tableStep5.getModel();
+        
+        for(int i=0; i<valueTF_IDF.length-1; ++i){
+            double num = CosinDistance.getDistance(valueTF_IDF[i], valueTF_IDF[valueTF_IDF.length-1]);
+            
+            Vector<Object> vt = new Vector<>();
+            vt.addElement(num);
+            vt.addElement(listIdDocument.get(i).getName());
+            vt.addElement(getText(listIdDocument.get(i).getId(), databaseName));
+            
+            model.addRow(vt);
+        }
+        
+        tableStep5.revalidate();
+    }
+
+    private void loadSizeTable5(){
+        tableStep5.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        tableStep5.getColumnModel().getColumn(0).setPreferredWidth(100);
+        tableStep5.getColumnModel().getColumn(1).setPreferredWidth(200);
+        tableStep5.getColumnModel().getColumn(2).setPreferredWidth(5000);
     }
 }

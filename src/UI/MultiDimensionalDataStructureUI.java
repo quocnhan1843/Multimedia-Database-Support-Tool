@@ -43,6 +43,7 @@ public class MultiDimensionalDataStructureUI extends javax.swing.JFrame{
         setSizeMainUI();
         setComboBox();
         setClose();
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     /**

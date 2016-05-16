@@ -49,6 +49,7 @@ public class TextDatabase extends javax.swing.JFrame {
         loadData();
         setComboBox();
         loadLang();
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     /**

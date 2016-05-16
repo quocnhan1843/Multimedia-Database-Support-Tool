@@ -180,7 +180,6 @@ public class AddNewCollection extends javax.swing.JFrame {
                                     "id_term int(11) NOT NULL," +
                                     "id_document int(11) NOT NULL," +
                                     "count int(11) NOT NULL default 0," +
-                                    "tf_idf double NOT NULL default 0.0, " +
                                     "CONSTRAINT pk_id PRIMARY KEY (id_term, id_document)," +
                                     "CONSTRAINT con_document FOREIGN KEY (id_document) REFERENCES documents(id)," +
                                     "CONSTRAINT con_term FOREIGN KEY (id_term) REFERENCES terms(id)," + 

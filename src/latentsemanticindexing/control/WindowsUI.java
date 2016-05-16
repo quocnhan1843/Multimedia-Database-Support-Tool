@@ -24,8 +24,8 @@ public class WindowsUI extends JPanel{
     private JPanel centerPanel;
     
     private Frequency frequency_Type;
-    private IF_IDF tf_idf_Type;
-    private IF_IDF_SVD tf_idf_svd_Type;
+    private TF_IDF tf_idf_Type;
+    private TF_IDF_SVD tf_idf_svd_Type;
     private SVD svd_Type;
     
     public WindowsUI(){
@@ -37,8 +37,8 @@ public class WindowsUI extends JPanel{
     private void init(){
         topPanel = new ClassAnlysis(this);
         frequency_Type = new Frequency();
-        tf_idf_Type = new IF_IDF();
-        tf_idf_svd_Type = new IF_IDF_SVD();
+        tf_idf_Type = new TF_IDF();
+        tf_idf_svd_Type = new TF_IDF_SVD();
         svd_Type = new SVD();
         centerPanel = new JPanel();
         

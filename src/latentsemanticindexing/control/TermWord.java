@@ -26,6 +26,9 @@ public class TermWord {
         List adjArray = null;
         List nounArray = null;
         List verbArray = null;
+        
+        if(string.equals("best") || string.equals("better")) return "good";
+        
         try{
             advArray = (List) stem.findStems(string, POS.ADVERB);
         }
@@ -46,13 +49,6 @@ public class TermWord {
         
         
         String noun = "", verb = "", adj = "", adv = "";
-        
-//        System.out.println("=================================");
-//        System.out.println(nounArray);
-//        System.out.println(verbArray);
-//        System.out.println(adjArray);
-//        System.out.println(advArray);
-//        System.out.println("=================================");
         
         noun = getWordTerm(nounArray);
         verb = getWordTerm(verbArray);

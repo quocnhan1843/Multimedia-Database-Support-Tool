@@ -131,10 +131,12 @@ public class MultimediaDatabaseSupportTool extends javax.swing.JFrame {
     private void labelMDSMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelMDSMouseClicked
         // TODO add your handling code here:
         new UI.MultiDimensionalDataStructureUI().setVisible(true);
+        dispose();
     }//GEN-LAST:event_labelMDSMouseClicked
 
     private void labelTDMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelTDMouseClicked
         // TODO add your handling code here:
+        dispose();
         new UI.TextDatabase().setVisible(true);
     }//GEN-LAST:event_labelTDMouseClicked
 

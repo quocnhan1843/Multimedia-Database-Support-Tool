@@ -6,7 +6,6 @@
 package latentsemanticindexing.control;
 
 import UI.Dictionary;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -15,7 +14,6 @@ import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
-import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -100,23 +98,6 @@ public class Frequency extends JPanel{
         double[][] arr = new double[listIdDocument.size()][listIdTermWord.size()];
         arr = Calculator.getFrequency(listIdDocument, listIdTermWord, databaseName);
         int sz = 0;
-        
-//        for(DataDocument idDocument: listIdDocument){
-//            Vector vec = new Vector();
-//            for(DataTermWord idTermWord:listIdTermWord){
-//                String id= idTermWord.getId();
-//                if(!id.equals("0")){
-//                    double num = getNumber(id,idDocument, databaseName);
-//                    vec.add(num);
-//                }else{
-//                    vec.add(0.0);
-//                }
-//            }
-//            for(int i=0; i<vec.size(); i++){
-//                arr[sz][i] = Double.valueOf(vec.get(i).toString());
-//            }
-//            sz++;
-//        }
         
         delAllCol(tableStep1);
         addTblCol(tableStep1, "Term Words/ Documents");

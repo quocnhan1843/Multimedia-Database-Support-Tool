@@ -32,7 +32,7 @@ import javax.swing.table.TableColumn;
  *
  * @author quocn
  */
-public class SVD extends JPanel{
+public class TF_IDF_SVD extends JPanel{
 
    private JTabbedPane tabbedPane;
     
@@ -56,7 +56,18 @@ public class SVD extends JPanel{
     private JPanel panelStep5;
     private JScrollPane scrollPaneStep5;
     
-    public SVD(){
+    private JTable tableStep6;
+    private JPanel panelStep6;
+    private JScrollPane scrollPaneStep6;
+    
+    private JTable tableStep7;
+    private JPanel panelStep7;
+    private JScrollPane scrollPaneStep7;
+    
+    private JTable tableStep8;
+    private JPanel panelStep8;
+    private JScrollPane scrollPaneStep8;
+    public TF_IDF_SVD(){
         //super();
         init();
         addLis();
@@ -73,12 +84,18 @@ public class SVD extends JPanel{
         initStep3();
         initStep4();
         initStep5();
+        initStep6();
+        initStep7();
+        initStep8();
         
         this.tabbedPane.add(panelStep1);
         this.tabbedPane.add(panelStep2);
         this.tabbedPane.add(panelStep3);          
         this.tabbedPane.add(panelStep4);  
         this.tabbedPane.add(panelStep5);  
+        this.tabbedPane.add(panelStep6);          
+        this.tabbedPane.add(panelStep7);  
+        this.tabbedPane.add(panelStep8);  
         
         loadTabName();
     }
@@ -122,6 +139,30 @@ public class SVD extends JPanel{
         setScrollPaneStep5();
         this.panelStep5.add(scrollPaneStep5);
     }
+    
+    private void initStep6(){
+        tableStep6 = new JTable();
+        panelStep6 = new JPanel();
+        panelStep6.setLayout(new GridLayout(1, 1));
+        setScrollPaneStep6();
+        this.panelStep6.add(scrollPaneStep6);
+    }
+    
+    private void initStep7(){
+        tableStep7 = new JTable();
+        panelStep7 = new JPanel();
+        panelStep7.setLayout(new GridLayout(1, 1));
+        setScrollPaneStep7();
+        this.panelStep7.add(scrollPaneStep7);
+    }
+    
+    private void initStep8(){
+        tableStep8 = new JTable();
+        panelStep8 = new JPanel();
+        panelStep8.setLayout(new GridLayout(1, 1));
+        setScrollPaneStep8();
+        this.panelStep8.add(scrollPaneStep8);
+    }
 
     private void setScrollPaneStep1() {
         scrollPaneStep1 = new JScrollPane(tableStep1
@@ -157,6 +198,30 @@ public class SVD extends JPanel{
                 , JScrollPane.VERTICAL_SCROLLBAR_ALWAYS
                 , JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         tableStep5.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        
+    } 
+    
+    private void setScrollPaneStep6() {
+        scrollPaneStep6 = new JScrollPane(tableStep6
+                , JScrollPane.VERTICAL_SCROLLBAR_ALWAYS
+                , JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        tableStep6.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        
+    } 
+    
+    private void setScrollPaneStep7() {
+        scrollPaneStep7 = new JScrollPane(tableStep7
+                , JScrollPane.VERTICAL_SCROLLBAR_ALWAYS
+                , JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        tableStep7.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        
+    } 
+    
+    private void setScrollPaneStep8() {
+        scrollPaneStep8 = new JScrollPane(tableStep8
+                , JScrollPane.VERTICAL_SCROLLBAR_ALWAYS
+                , JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        tableStep8.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         
     } 
 
@@ -199,7 +264,11 @@ public class SVD extends JPanel{
             v2.addElement(v.get(i));
         }
         
-        setTableStep2(arr, v2, listIdDocument, databaseName);
+        try {
+            setTableStep2(arr, v2, listIdDocument, listIdTermWord, listWordQR, databaseName);
+        } catch (Exception ex) {
+            //ex.printStackTrace();
+        }
     }
     
     private void addTblCol(JTable table,String name) {
@@ -234,23 +303,84 @@ public class SVD extends JPanel{
 
     private void loadTabName() {
         this.tabbedPane.setTitleAt(0, "Frequency");
-        this.tabbedPane.setTitleAt(1, "T Matrix");
-        this.tabbedPane.setTitleAt(2, "S Matrix");
-        this.tabbedPane.setTitleAt(3, "D Matrix");
-        this.tabbedPane.setTitleAt(4, "Consin");
+        this.tabbedPane.setTitleAt(1, "tf");
+        this.tabbedPane.setTitleAt(2, "idf");
+        this.tabbedPane.setTitleAt(3, "if*idf");
+        this.tabbedPane.setTitleAt(4, "T Matrix");
+        this.tabbedPane.setTitleAt(5, "S Matrix");
+        this.tabbedPane.setTitleAt(6, "D Matrix");
+        this.tabbedPane.setTitleAt(7, "Consin");
     }
     
-    private void setTableStep2(double[][] arr, Vector v, List<DataDocument> listIdDocument, String databaseName) {
+    private void setTableStep2(double[][] arr1, Vector v2
+            , List<DataDocument> listIdDocument
+            , List<DataTermWord> listIdTermWord
+            , HashMap listWordQR, String databaseName) throws Exception {
         
-        delAllCol(tableStep5);
-        addTblCol(tableStep5, Dictionary.Words.SCORE.getString());
-        addTblCol(tableStep5, Dictionary.Words.NAME_DOCUMENT.getString());
-        addTblCol(tableStep5, Dictionary.Words.TEXT.getString());
+        delAllCol(tableStep8);
+        addTblCol(tableStep8, Dictionary.Words.SCORE.getString());
+        addTblCol(tableStep8, Dictionary.Words.NAME_DOCUMENT.getString());
+        addTblCol(tableStep8, Dictionary.Words.TEXT.getString());
         
-        double[][] frequency = getFrequency(arr, v);
-       // double[][] frequency = {{1,1,3},{1,3,1}};
+        double TF[][] = TF_IDF_Calculator.getTF(arr1, v2);
+        double IDF[] = TF_IDF_Calculator.getIDF(arr1, v2);
+        
+        double[][] valueTF_IDF = new double[TF.length][TF[0].length];
+        
+        for(int i=0; i<TF.length; i++){
+            for(int j=0; j<TF[i].length; j++){
+                valueTF_IDF[i][j] = TF[i][j] * IDF[j];
+            }
+        }
+        
+        //=================================table 2===========
+        delAllCol(tableStep2);
+        addTblCol(tableStep2, "Term Words/ Documents");
+        for(DataTermWord ob:listIdTermWord){
+            addTblCol(tableStep2, ob.getName());
+        }
+        
+        for(int i=0; i < TF.length; i++){
+            Vector vector = new Vector();
+            if(i < TF.length - 1) vector.addElement(listIdDocument.get(i).getName());
+            else vector.addElement("#QUERY");
+            for(int j = 0; j<TF[i].length; j++){
+                vector.addElement(TF[i][j]);
+            }
+            addTblRow(tableStep2, vector);
+        }
+        //=================================table 3===========
+        delAllCol(tableStep3);
+        addTblCol(tableStep3, "Term Words/ Documents");
+        for(DataTermWord ob:listIdTermWord){
+            addTblCol(tableStep3, ob.getName());
+        }
+        Vector vectorIDF = new Vector();
+        vectorIDF.addElement("Collection");
+        for(int i=0; i < IDF.length; i++){
+            vectorIDF.addElement(IDF[i]);
+        }
+        addTblRow(tableStep3, vectorIDF);
+        //=================================table 4===========
+        delAllCol(tableStep4);
+        addTblCol(tableStep4, "Term Words/ Documents");
+        for(DataTermWord ob:listIdTermWord){
+            addTblCol(tableStep4, ob.getName());
+        }
+        
+        for(int i=0; i < valueTF_IDF.length; i++){
+            Vector vector = new Vector();
+            if(i < valueTF_IDF.length - 1) vector.addElement(listIdDocument.get(i).getName());
+            else vector.addElement("#QUERY");
+            for(int j = 0; j<valueTF_IDF[i].length; j++){
+                vector.addElement(valueTF_IDF[i][j]);
+            }
+            addTblRow(tableStep4, vector);
+        }
+        
+        tableStep5.revalidate();
        
-        Matrix A = new Matrix(frequency).transpose();
+        Matrix A = new Matrix(valueTF_IDF).transpose();
         
         SingularValueDecomposition svd = A.svd();
         Matrix U = svd.getU().transpose();       
@@ -260,7 +390,7 @@ public class SVD extends JPanel{
         double[][] T = V.getArray();
         
         for(int i=0; i<T[0].length; i++){
-            addTblCol(tableStep2, String.valueOf(i));
+            addTblCol(tableStep5, String.valueOf(i));
         }
         
         for(int i=0; i<T.length; i++){
@@ -268,21 +398,21 @@ public class SVD extends JPanel{
             for(int j=0; j<T[0].length; j++){
                 row.addElement(T[i][j]);
             }
-            addTblRow(tableStep2, row);
+            addTblRow(tableStep5, row);
         }
         
         for(int i=0; i<S.length; i++){
-            addTblCol(tableStep3, String.valueOf(i));
+            addTblCol(tableStep6, String.valueOf(i));
         }
         
         Vector row = new Vector();
         for(double s:S){
             row.addElement(s);
         }
-        addTblRow(tableStep3, row);
+        addTblRow(tableStep6, row);
         
         for(int i=0; i<D[0].length; i++){
-            addTblCol(tableStep4, String.valueOf(i));
+            addTblCol(tableStep7, String.valueOf(i));
         }
         
         for(int i=0; i<D.length; i++){
@@ -290,11 +420,10 @@ public class SVD extends JPanel{
             for(int j=0; j<D[0].length; j++){
                 row.addElement(D[i][j]);
             }
-            addTblRow(tableStep4, row);
+            addTblRow(tableStep7, row);
         }
         
         double num;
-        DefaultTableModel model = (DefaultTableModel) tableStep5.getModel();
         for(int i=0; i < D.length - 1; i++){
             num = CosinDistance.getDistance(D[i], D[D.length-1]);            
             Vector<Object> vt = new Vector<>();
@@ -302,9 +431,9 @@ public class SVD extends JPanel{
             vt.addElement(listIdDocument.get(i).getName());
             vt.addElement(getText(listIdDocument.get(i).getId(), databaseName));
             
-            model.addRow(vt);
+            addTblRow(tableStep8, vt);
         }
-        loadSizeTable2();
+        loadSizeTable8();
     }
 
     private String getText(String id, String databaseName) {
@@ -322,7 +451,7 @@ public class SVD extends JPanel{
     }
 
     private void addLis() {
-        tableStep5.addMouseListener(new java.awt.event.MouseAdapter() {
+        tableStep8.addMouseListener(new java.awt.event.MouseAdapter() {
             
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 JPopupMenu popupMenu = new JPopupMenu();
@@ -335,10 +464,10 @@ public class SVD extends JPanel{
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try{
-                        int row = tableStep5.getSelectedRow();
+                        int row = tableStep8.getSelectedRow();
 
-                        String text = tableStep5.getModel().getValueAt(row, 2).toString();
-                        String name = tableStep5.getModel().getValueAt(row, 1).toString();;
+                        String text = tableStep8.getModel().getValueAt(row, 2).toString();
+                        String name = tableStep8.getModel().getValueAt(row, 1).toString();;
 
                         JDialog dialog = new JDialog();
                         dialog.setTitle(name);
@@ -360,11 +489,11 @@ public class SVD extends JPanel{
         });
     }
     
-    private void loadSizeTable2(){
-        tableStep5.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tableStep5.getColumnModel().getColumn(0).setPreferredWidth(100);
-        tableStep5.getColumnModel().getColumn(1).setPreferredWidth(200);
-        tableStep5.getColumnModel().getColumn(2).setPreferredWidth(5000);
+    private void loadSizeTable8(){
+        tableStep8.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        tableStep8.getColumnModel().getColumn(0).setPreferredWidth(100);
+        tableStep8.getColumnModel().getColumn(1).setPreferredWidth(200);
+        tableStep8.getColumnModel().getColumn(2).setPreferredWidth(5000);
     }
 
     public String getName() {

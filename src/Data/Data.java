@@ -26,9 +26,9 @@ public class Data {
             con = DriverManager.getConnection(connectString);
             //System.out.println("Ket noi OK");
         } catch (ClassNotFoundException ex) {
-            System.out.println("Không tìm thấy driver");
+           // System.out.println("Không tìm thấy driver");
         } catch (SQLException ex) {
-            System.out.println("Không kết nối được cơ sở dữ liệu!");
+           // System.out.println("Không kết nối được cơ sở dữ liệu! = " + nameDatabase);
         }
     }
     public static synchronized void createConnection(String nameDatabase){
