@@ -28,6 +28,8 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -416,6 +418,9 @@ public class TF_IDF extends JPanel{
             vt.addElement(getText(listIdDocument.get(i).getId(), databaseName));
             
             model.addRow(vt);
+            
+            final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
+                tableStep5.setRowSorter(sorter);
         }
         
         tableStep5.revalidate();

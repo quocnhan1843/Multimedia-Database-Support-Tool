@@ -24,6 +24,8 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -194,6 +196,8 @@ public class Frequency extends JPanel{
             
             model.addRow(vt);
         }
+        final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
+            tableStep2.setRowSorter(sorter);
         
         tableStep2.revalidate();
     }

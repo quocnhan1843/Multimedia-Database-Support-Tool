@@ -27,6 +27,8 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -433,6 +435,9 @@ public class TF_IDF_SVD extends JPanel{
             
             addTblRow(tableStep8, vt);
         }
+        DefaultTableModel model = (DefaultTableModel) tableStep8.getModel();
+        final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
+            tableStep8.setRowSorter(sorter);
         loadSizeTable8();
     }
 
